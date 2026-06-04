@@ -166,64 +166,51 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
-                      child: Column(
-                        children: [
-                          Text("",style: textStyleForTextField),
-                          SizedBox(height:  6),
-                          Container(
-                            height: Get.height * 0.07,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: lightGrey),
+                      child: SizedBox(
+                        height: Get.height * 0.07,
+                        child: CountryCodePicker(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          searchDecoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Theme.of(context).primaryColor,
+                                width: 2,
+                              ),
+                            ),
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: CountryCodePicker(
-                              margin: EdgeInsets.symmetric(horizontal: 5),
-                              searchDecoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
-                                ),
-
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                    width: 1,
-                                  ),
-                                ),
-
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                    width: 2,
-                                  ),
-                                ),
-
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              onChanged: (CountryCode countryCode) {
-                                profileController.countryDialCode =
-                                    countryCode.dialCode!;
-                              },
-                              initialSelection: profileController.countryDialCode,
-                              showDropDownButton: true,
-                              padding: EdgeInsets.zero,
-                              hideMainText: true,
-                              showFlagMain: true,
-                              flagWidth: 25,
-                              dialogBackgroundColor: Theme.of(context).cardColor,
-                              textStyle: textStyleForTextField,
-                            ),
                           ),
-                        ],
+                          onChanged: (CountryCode countryCode) {
+                            profileController.countryDialCode =
+                                countryCode.dialCode!;
+                          },
+                          initialSelection: profileController.countryDialCode,
+                          showDropDownButton: true,
+                          padding: EdgeInsets.zero,
+                          hideMainText: true,
+                          showFlagMain: true,
+                          flagWidth: 25,
+                          dialogBackgroundColor: Theme.of(context).cardColor,
+                          textStyle: textStyleForTextField,
+                        ),
                       ),
                     ),
                     SizedBox(width: 10),
                     Expanded(
-                      flex: 2,
+                      flex: 3,
                       child: CustomTextField(
                         width: 0.9,
                         height: 0.07,
