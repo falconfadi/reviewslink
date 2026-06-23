@@ -1,23 +1,36 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/pages/main_page/controller.dart';
+import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
 import 'package:get/get.dart';
+import 'package:reviews_link_v2/widgets/header/internal_header.dart';
+import 'package:reviews_link_v2/widgets/loading/custom_loading.dart';
 
 class QRViewPage extends StatefulWidget {
+
   const QRViewPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _QRViewExampleState();
+  State<StatefulWidget> createState() => _QRViewPageState();
 }
 
-class _QRViewExampleState extends State<QRViewPage> {
+class _QRViewPageState extends State<QRViewPage> with WidgetsBindingObserver {
+
   Barcode? result;
   QRViewController? controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   final MainPageController mainPageController = Get.find();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void reassemble() {
@@ -26,6 +39,23 @@ class _QRViewExampleState extends State<QRViewPage> {
       controller!.pauseCamera();
     }
     controller!.resumeCamera();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (controller == null) return;
+    if (state == AppLifecycleState.paused) {
+      controller!.pauseCamera();
+    } else if (state == AppLifecycleState.resumed) {
+      controller!.resumeCamera();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    controller?.dispose();
+    super.dispose();
   }
 
   @override
@@ -39,6 +69,7 @@ class _QRViewExampleState extends State<QRViewPage> {
         }
       },
       child: Scaffold(
+        appBar: InternalHeader(),
         body: Stack(
           children: [
             Column(
@@ -53,18 +84,18 @@ class _QRViewExampleState extends State<QRViewPage> {
                         Text(
                           'Barcode Type: ${result!.format.name} \n Data: ${result!.code}',
                           textAlign: TextAlign.center,
+                          style: AppTheme.bodyLarge.copyWith(fontSize: 18.sp),
                         )
-                      else
-                        const Text(
+                      else Text(
                           'Scan a code',
-                          style: TextStyle(fontSize: 16),
+                          style: AppTheme.bodyLarge.copyWith(fontSize: 18.sp)
                         ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                            margin: const EdgeInsets.all(8),
+                            margin: EdgeInsets.all(8),
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: primaryColor,
@@ -76,9 +107,13 @@ class _QRViewExampleState extends State<QRViewPage> {
                               child: FutureBuilder(
                                 future: controller?.getFlashStatus(),
                                 builder: (context, snapshot) {
-                                  return Text(
-                                    'Flash: ${(snapshot.data == true) ? 'On' : 'Off'}',
-                                    style: TextStyle(fontSize: 16),
+                                  return Padding(
+                                    padding: Constant.isTablet(context) ?
+                                    EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h) : EdgeInsets.zero,
+                                    child: Text(
+                                      'Flash: ${(snapshot.data == true) ? 'On' : 'Off'}',
+                                      style: AppTheme.bodyLarge.copyWith(color: white),
+                                    ),
                                   );
                                 },
                               ),
@@ -86,7 +121,7 @@ class _QRViewExampleState extends State<QRViewPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 25.h),
                     ],
                   ),
                 ),
@@ -94,10 +129,10 @@ class _QRViewExampleState extends State<QRViewPage> {
             ),
             if (mainPageController.loading.value)
               Container(
-                width: Get.width,
-                height: Get.height,
+                width: 1.sw,
+                height: 1.sh,
                 color: primaryColor.withAlpha(100),
-                child: Center(child: CircularProgressIndicator(color: white)),
+                child: LoadingIndicator(color: white)
               ),
           ],
         ),
@@ -106,20 +141,15 @@ class _QRViewExampleState extends State<QRViewPage> {
   }
 
   Widget _buildQrView(BuildContext context) {
-    var scanArea =
-        (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
-        ? 300.0
-        : 300.0;
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: QrScannerOverlayShape(
-        borderColor: Colors.red,
-        borderRadius: 10,
-        borderLength: 30,
-        borderWidth: 10,
-        cutOutSize: scanArea,
+        borderColor: red,
+        borderRadius: 10.r,
+        borderLength: 35.h,
+        borderWidth: 10.w,
+        cutOutSize: 320.w,
       ),
       onPermissionSet: (ctrl, p) => _onPermissionSet(context, ctrl, p),
     );
@@ -129,17 +159,21 @@ class _QRViewExampleState extends State<QRViewPage> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
-      if (Platform.isAndroid) {
-        controller.pauseCamera();
-        controller.dispose();
-      }
+    if (Platform.isIOS) {
+      controller.resumeCamera();
+    }
+    controller.scannedDataStream.listen((scanData) async {
+      await controller.pauseCamera();
       setState(() {
         result = scanData;
-        mainPageController.claimCodeScan(context, scanData.code);
       });
+      await mainPageController.claimCodeScan(context, scanData.code);
+      if (mounted) {
+        await controller.resumeCamera();
+      }
     });
   }
+
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');

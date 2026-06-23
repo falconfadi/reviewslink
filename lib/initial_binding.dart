@@ -5,6 +5,5 @@ class InitialBinding implements Bindings {
   @override
   void dependencies() {
     Get.put(InitController());
-    // Get.put<NetworkController>(NetworkController(), permanent: true);
   }
 }

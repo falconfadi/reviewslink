@@ -5,28 +5,44 @@ import 'package:image_picker/image_picker.dart';
 import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/app_storage.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
-import 'package:reviews_link_v2/data/models/body/auth/update_profile.dart';
+import 'package:reviews_link_v2/data/models/body/auth/update_profile_body.dart';
 import 'package:reviews_link_v2/data/models/response/auth/login_response.dart';
 import 'package:reviews_link_v2/data/repository/auth_repo.dart';
 import 'package:reviews_link_v2/extensions/context_localization.dart';
 import 'package:reviews_link_v2/widgets/snack_bar/top_snack_bar.dart';
 
 class ProfileController extends GetxController {
-  final InitController initController = Get.find();
 
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
   TextEditingController jobTitleController = TextEditingController();
-  Rx<File?> pickedImage = Rx<File?>(null); // for new selected image
+  Rx<File?> pickedImage = Rx<File?>(null);
   RxString imageUrl = ''.obs;
   RxBool loading = false.obs;
-  String countryDialCode = "ae";
+  RxString countryDialCode = "+971".obs;
   RxBool showPassword = true.obs;
   RxBool removeImage = false.obs;
 
+  final InitController initController = Get.find();
   AuthRepo authRepo = AuthRepo();
+
+  @override
+  void onInit() async {
+    await fillFields();
+    super.onInit();
+  }
+
+  fillFields() {
+    fullNameController.text = initController.userData!.userName ?? "";
+    emailController.text = initController.userData!.userEmail ?? "";
+    phoneNumberController.text = initController.userData!.mobile ?? "";
+    companyNameController.text = initController.userData!.companyName ?? "";
+    jobTitleController.text = initController.userData!.jobTitle ?? "";
+    imageUrl.value = initController.userData!.img ?? "";
+    countryDialCode.value = initController.userData!.mobileCode ?? "+971";
+  }
 
   Future<File?> selectImage({required ImageSource imageSource}) async {
     final imagePicker = ImagePicker();
@@ -35,9 +51,7 @@ class ProfileController extends GetxController {
       imageQuality: 25,
     );
     if (pickedFile != null) {
-
       removeImage.value = false;
-
       return File(pickedFile.path);
     }
     return null;
@@ -68,19 +82,16 @@ class ProfileController extends GetxController {
       Constant.closeKeyBoard();
       if (isUserDataValid()) {
         loading.value = true;
-        authRepo
-            .updateProfile(
+        authRepo.updateProfile(
               UpdateProfileBody(
                 name: fullNameController.text,
-                mobileCode: countryDialCode,
+                mobileCode: countryDialCode.value,
                 mobile: phoneNumberController.text,
                 companyName: companyNameController.text,
-                // image: pickedImage.value,
                 image: removeImage.value ? null : pickedImage.value,
                 defaultImage: removeImage.value ? 1 : null,
               ),
-            )
-            .then((value) async {
+            ).then((value) async {
               if (value.code == 200) {
                 final oldUser = await AppStorage.getUser();
                 final updatedUser = User.fromJson(value.body['user']);
@@ -113,21 +124,5 @@ class ProfileController extends GetxController {
     if (countryDialCode.trim().isEmpty) return false;
 
     return true;
-  }
-
-  @override
-  void onInit() async {
-    await fillFields();
-    super.onInit();
-  }
-
-  fillFields() {
-    fullNameController.text = initController.userData!.userName ?? "";
-    emailController.text = initController.userData!.userEmail ?? "";
-    phoneNumberController.text = initController.userData!.mobile ?? "";
-    companyNameController.text = initController.userData!.companyName ?? "";
-    jobTitleController.text = initController.userData!.jobTitle ?? "";
-    imageUrl.value = initController.userData!.img ?? "";
-    countryDialCode = initController.userData!.mobileCode ?? "";
   }
 }

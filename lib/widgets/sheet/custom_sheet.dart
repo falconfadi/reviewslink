@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:reviews_link_v2/res/Keys.dart';
 import 'package:reviews_link_v2/res/color.dart';
 
@@ -41,7 +42,7 @@ class CustomSheet<T> extends StatelessWidget {
     isScrollControlled: true,
     barrierColor: grey.withOpacity(0.30),
     backgroundColor: white,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(50))),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(50.r))),
     builder: (_) => CustomSheet._(
       header: header,
       action: action,
@@ -58,7 +59,7 @@ class CustomSheet<T> extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             color: white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(50))
+          borderRadius: BorderRadius.vertical(top: Radius.circular(50.r))
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: padding == null ? 0 : padding!),
@@ -69,21 +70,21 @@ class CustomSheet<T> extends StatelessWidget {
               children: [
                 addHeader == false ? const Center() :
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
+                  padding: EdgeInsets.symmetric(vertical: 45.h),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      InkWell(onTap: () => Navigator.pop(context) ,child: Icon(Icons.arrow_back_outlined,color: black,size: 25)),
+                      InkWell(onTap: () => Navigator.pop(context) ,child: Icon(Icons.arrow_back_outlined,color: black,size: 25.sp)),
                       header,
-                      action ?? SizedBox(width: 25,height: 25)
+                      action ?? SizedBox(width: 25.sp,height: 25.sp)
                     ],
                   )
                 ),
                 Flexible(
                   child: SingleChildScrollView(child: child),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 15.h),
               ],
             ),
           ),

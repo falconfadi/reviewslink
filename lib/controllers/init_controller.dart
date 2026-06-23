@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/app_storage.dart';
 import 'package:reviews_link_v2/data/models/response/auth/login_response.dart';
 import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
-import 'package:reviews_link_v2/data/models/response/init/support_response.dart';
-import 'package:reviews_link_v2/data/repository/init_repo.dart';
 import 'package:reviews_link_v2/extensions/context_localization.dart';
 import 'package:reviews_link_v2/res/color.dart';
 
 class InitController extends GetxController {
+
   User? userData;
-  bool backButtonStatus = false;
   DateTime timeBackPressed = DateTime.now();
 
   RxList<ServiceType> servicesTypeList = <ServiceType>[].obs;
   RxList<Currencies> currencyList = <Currencies>[].obs;
-  RxString pathToUpload = ''.obs;
 
   logout() async {
     await AppStorage.deleteUser();
@@ -43,10 +39,7 @@ class InitController extends GetxController {
     }
   }
 
-  String formatPriceWithConversion({
-    required double price,
-    required int productCurrencyId,
-  }) {
+  String formatPriceWithConversion({required double price, required int productCurrencyId}) {
     final baseCurrency = currencyList.firstWhere(
       (c) => int.parse(c.id!) == productCurrencyId,
     );

@@ -1,9 +1,10 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:reviews_link_v2/res/color.dart';
 
 class CustomPopUp extends StatelessWidget {
+
   final bool open;
   final VoidCallback outSideOnTap;
   final Widget child;
@@ -34,8 +35,8 @@ class CustomPopUp extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withAlpha(130),
-                          Colors.black.withAlpha(100),
+                          black.withAlpha(130),
+                          black.withAlpha(100),
                         ],
                       ),
                     ),

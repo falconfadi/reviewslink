@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_link_v2/pages/profile/controller.dart';
+import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
-import 'package:reviews_link_v2/res/styles.dart';
 
 class PickImageSheet extends StatelessWidget {
 
@@ -30,7 +31,7 @@ class PickImageSheet extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 30.h),
       ],
     );
   }
@@ -47,23 +48,21 @@ class PickImageSheet extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: 60.w,
+            height: 60.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: primaryColor,
             ),
             child: Center(
-              child: Icon(icon, size: 30, color: white),
+              child: Icon(icon, size: 30.sp, color: white),
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Center(
-            child: Text(labelKey,
-              style: textStyleForSmallBlackRegularText.copyWith(fontWeight: FontWeight.w600)
-            ),
+            child: Text(labelKey, style: AppTheme.bodyLarge),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 10.h),
         ],
       ),
     );

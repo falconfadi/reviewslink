@@ -5,7 +5,7 @@ import 'package:reviews_link_v2/data/models/body/codes/claim_code_body.dart';
 import 'package:reviews_link_v2/data/models/body/codes/create_qr_request_body.dart';
 import 'package:reviews_link_v2/data/models/body/codes/get_my_codes_body.dart';
 import '../../data/constant/api_constant.dart';
-import '../../data/dio/dio_client_new.dart';
+import '../../data/dio/api_client.dart';
 import 'package:get/get.dart';
 
 class CodesRepo {

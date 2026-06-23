@@ -1,16 +1,16 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:reviews_link_v2/res/Keys.dart';
+import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
-import 'package:reviews_link_v2/res/styles.dart';
 import 'package:reviews_link_v2/widgets/button/custom_button.dart';
 
 class Dialogs {
   static void show(
     BuildContext context, {
     String? title,
-    VoidCallback? okTap,
     bool? cancelBtn,
     Widget? okBtn,
     Widget? content,
@@ -31,7 +31,7 @@ class Dialogs {
               height: 0.05,
               border: Border.all(color: lightGrey, width: 1.5),
               title: "Cancel",
-              textStyle: textStyleForSmallBlackRegularText,
+              textStyle: AppTheme.labelLarge.copyWith(fontSize: 18.sp),
               color: white,
               onTap: () {
                 Get.back();
@@ -40,7 +40,7 @@ class Dialogs {
           : null,
       btnOk: okBtn,
       title: isCustom ? null : title,
-      titleTextStyle: textStyleForMediumBlackRegularText,
+      titleTextStyle: AppTheme.labelLarge.copyWith(fontSize: 18.sp),
     ).show();
   }
 }

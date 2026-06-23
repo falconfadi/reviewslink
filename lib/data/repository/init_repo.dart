@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/constant/api_constant.dart';
 import 'package:reviews_link_v2/data/dio/api_response.dart';
-import 'package:reviews_link_v2/data/dio/dio_client_new.dart';
+import 'package:reviews_link_v2/data/dio/api_client.dart';
 
 class InitRepo {
   ApiClient apiClient = ApiClient();

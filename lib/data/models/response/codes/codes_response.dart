@@ -1,4 +1,5 @@
-import 'package:reviews_link_v2/pages/services/models/service_model.dart';
+
+import 'package:reviews_link_v2/data/models/response/service/service_response.dart';
 
 class CodesResponse {
   final int id;
@@ -13,7 +14,7 @@ class CodesResponse {
   final String? dateOfDownload;
   final int adminId;
   final String creationDate;
-  final ServiceModel service;
+  final ServiceResponse service;
 
   CodesResponse({
     required this.id,
@@ -47,7 +48,7 @@ class CodesResponse {
       dateOfDownload: json['date_of_download'],
       adminId: json['admin_id'] ?? 0,
       creationDate: json['creation_date'] ?? '',
-      service: ServiceModel.fromJson(json['service'] ?? {}),
+      service: ServiceResponse.fromJson(json['service'] ?? {}),
     );
   }
 }

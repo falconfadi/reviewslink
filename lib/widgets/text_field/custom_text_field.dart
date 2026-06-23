@@ -1,35 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:reviews_link_v2/constant/constant.dart';
+import 'package:reviews_link_v2/res/app_theme.dart';
 import '../../res/color.dart';
 
 class CustomTextField extends StatelessWidget {
-  final double width;
-  final double height;
   final String? labelText;
   final Widget? icon;
   final Widget? suffixIcon;
   final TextEditingController? controller;
   final TextInputType textInputType;
-  final String? Function(String?)? validator;
   final int? maxLength;
   final TextAlign? textAlign;
   final bool? obscureText;
   final Color? fillColor;
   final Color? textColor;
   final String? title;
-  final TextStyle? titleStyle;
   final bool? readOnly;
   final int? maxLines;
   final int? minLines;
   final bool? required;
 
   const CustomTextField({
-    required this.width,
-    required this.height,
     this.controller,
     this.labelText,
     this.icon,
-    this.validator,
     this.maxLength,
     this.textAlign,
     this.obscureText,
@@ -38,7 +33,6 @@ class CustomTextField extends StatelessWidget {
     required this.textInputType,
     this.textColor,
     this.title,
-    this.titleStyle,
     this.readOnly,
     this.maxLines,
     this.minLines,
@@ -48,6 +42,7 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = Constant.isTablet(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -55,78 +50,67 @@ class CustomTextField extends StatelessWidget {
         Text.rich(
           TextSpan(
             text: title ?? "",
-            style: titleStyle,
+            style: AppTheme.labelLarge.copyWith(fontSize: 15.sp,fontWeight: FontWeight.w500),
             children: [
               if (required == true)
                 TextSpan(
                   text: ' *',
-                  style: (titleStyle ?? const TextStyle())
-                      .copyWith(color: red),
+                    style: AppTheme.labelLarge.copyWith(fontSize: 15.sp,fontWeight: FontWeight.w500,color: red)
                 ),
             ],
           ),
         ),
-        SizedBox(height: title == null ? 0 : 6),
+        SizedBox(height: title == null ? 0 : 6.h),
         Container(
-          width: Get.width * width,
-          height: Get.height * height,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
+          width: 1.sw,
           child: TextField(
             textAlignVertical: TextAlignVertical.center,
-            cursorHeight: 18,
+            cursorHeight: isTablet ? 35 : 18,
             obscureText: obscureText ?? false,
             maxLength: maxLength ?? 500,
             minLines: minLines ?? 1,
             maxLines: maxLines ?? 1,
             readOnly: readOnly ?? false,
-            // validator: validator,
             cursorColor: Colors.grey,
             controller: controller,
             autofocus: false,
-            style: TextStyle(color: textColor ?? black, fontSize: 15),
+            style: AppTheme.bodyLarge,
             decoration: InputDecoration(
-              // contentPadding: EdgeInsets.only(
-              //   bottom: (Get.height * height) / 2,
-              //   left: 10,
-              //   right: 10,
-              // ),
               counterText: '',
               hintText: labelText,
-              hintStyle: const TextStyle(color: Colors.grey, fontSize: 13),
+              hintStyle: AppTheme.bodyMedium.copyWith(color: Colors.grey),
               isDense: true,
               filled: true,
-              fillColor: fillColor ?? Colors.transparent,
+              fillColor: fillColor ?? white,
               prefixIconColor: Colors.grey,
               prefixIcon: icon,
               suffixIcon: suffixIcon,
+              contentPadding: isTablet ? EdgeInsets.all(10.w) : null,
               prefixIconConstraints: BoxConstraints(
-                maxHeight: Get.height * 0.1,
-                maxWidth: Get.height * 0.1,
+                maxHeight: 50.h,
+                maxWidth: 50.w,
               ),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: primaryColor),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: lightGrey),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.grey),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12.r),
               ),
               errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: Colors.red.withValues(alpha: 0.8),
-                ),
-                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: red),
+                borderRadius: BorderRadius.circular(12.r),
               ),
             ),
-            // textAlign: textAlign ?? TextAlign.center,
             keyboardType: textInputType,
           ),
         ),

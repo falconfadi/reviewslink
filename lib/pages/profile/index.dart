@@ -1,13 +1,16 @@
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/data/constant/api_constant.dart';
 import 'package:reviews_link_v2/pages/profile/controller.dart';
 import 'package:reviews_link_v2/pages/profile/widget/pick_image_sheet.dart';
 import 'package:reviews_link_v2/res/app_images.dart';
+import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
-import 'package:reviews_link_v2/res/styles.dart';
 import 'package:reviews_link_v2/widgets/button/custom_button.dart';
+import 'package:reviews_link_v2/widgets/country_code_picker/custom_country_code_picker.dart';
 import 'package:reviews_link_v2/widgets/dialog/custom_dialog.dart';
 import 'package:reviews_link_v2/widgets/header/internal_header.dart';
 import 'package:get/get.dart';
@@ -22,19 +25,22 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = Constant.isTablet(context);
     return Obx(() {
       return Scaffold(
         backgroundColor: white,
         appBar: InternalHeader(),
         body: SafeArea(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 20),
-                Text("Edit Profile Information", style: textStyleForTitle),
-                SizedBox(height: 30),
+                SizedBox(height: 25.h),
+                Text("Edit Profile Information",
+                    style: AppTheme.displayLarge.copyWith(fontSize: 22.sp)
+                ),
+                SizedBox(height: 25.h),
                 Center(
                   child: Stack(
                     children: [
@@ -49,14 +55,14 @@ class ProfilePage extends StatelessWidget {
                                   children: [
                                     InkWell(
                                       onTap: () => Get.back(),
-                                      child: Icon(Icons.close),
+                                      child: Icon(Icons.close,size: 25.sp),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 10),
+                                SizedBox(height: 10.h),
                                 Container(
-                                  width: Get.width,
-                                  height: Get.width,
+                                  width: 1.sw,
+                                  height: 1.sw,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -74,17 +80,16 @@ class ProfilePage extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                SizedBox(height: 15),
+                                SizedBox(height: 20.h),
                               ],
                             ),
                           );
                         },
                         child: Container(
-                          width: 100,
-                          height: 100,
-                          padding: EdgeInsets.all(5),
+                          width: 110.w,
+                          height: 110.w,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(color: lightGrey),
                             image: DecorationImage(
                               fit: BoxFit.cover,
@@ -107,29 +112,29 @@ class ProfilePage extends StatelessWidget {
                         bottom: 0,
                         right: 0,
                         child: InkWell(
-                          onTap: () async {
+                          onTap: () {
                             CustomSheet.show(
                               isDismissible: true,
-                              header: Text("Select Image",style: textStyleForSmallBlackRegularText.copyWith(fontWeight: FontWeight.w600)),
+                              header: Text("Select Image", style: AppTheme.bodyLarge),
                               action: InkWell(
                                   onTap: () {
                                     profileController.removeUserImage();
                                   },
-                                  child: SvgPicture.asset(DELETE_ICON,width: 25,color: secondaryColor)),
-                              padding: 30,
+                                  child: SvgPicture.asset(DELETE_ICON,width: 25.w,color: secondaryColor)),
+                              padding: 30.w,
                               context: context,
                               child: PickImageSheet(),
                             );
                           },
                           child: Container(
-                            width: 35,
-                            height: 35,
+                            width: 40.w,
+                            height: 40.w,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: primaryColor.withOpacity(1),
                             ),
                             child: Center(
-                              child: Icon(Icons.edit, color: white),
+                              child: Icon(Icons.edit, color: white,size: 25.sp),
                             ),
                           ),
                         ),
@@ -137,123 +142,67 @@ class ProfilePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 30.h),
                 CustomTextField(
-                  width: 0.9,
-                  height: 0.07,
                   controller: profileController.fullNameController,
                   title: "Full name",
                   required: true,
-                  textColor: black,
-                  titleStyle: textStyleForTextField,
-                  fillColor: Colors.white,
                   textInputType: TextInputType.text,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 25.h),
                 CustomTextField(
-                  width: 0.9,
-                  height: 0.07,
                   controller: profileController.emailController,
                   title: "Email address",
-                  textColor: black,
-                  titleStyle: textStyleForTextField,
                   fillColor: lightGrey,
                   textInputType: TextInputType.text,
                   readOnly: true,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 25.h),
                 Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: Get.height * 0.07,
-                        child: CountryCodePicker(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          searchDecoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 1,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide(
-                                color: Theme.of(context).primaryColor,
-                                width: 2,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
+                    Column(
+                      children: [
+                        Text(""),
+                        SizedBox(height: 6.h),
+                        CustomCountryCodePicker(
                           onChanged: (CountryCode countryCode) {
-                            profileController.countryDialCode =
-                                countryCode.dialCode!;
+                            profileController.countryDialCode.value =
+                            countryCode.dialCode!;
                           },
-                          initialSelection: profileController.countryDialCode,
-                          showDropDownButton: true,
-                          padding: EdgeInsets.zero,
-                          hideMainText: true,
-                          showFlagMain: true,
-                          flagWidth: 25,
-                          dialogBackgroundColor: Theme.of(context).cardColor,
-                          textStyle: textStyleForTextField,
+                          initialSelection: profileController.countryDialCode.value,
                         ),
-                      ),
+                      ],
                     ),
-                    SizedBox(width: 10),
                     Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: CustomTextField(
-                        width: 0.9,
-                        height: 0.07,
                         controller: profileController.phoneNumberController,
                         title: "Phone number",
                         required: true,
-                        textColor: black,
-                        titleStyle: textStyleForTextField,
-                        fillColor: Colors.white,
                         textInputType: TextInputType.phone,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 25.h),
                 CustomTextField(
-                  width: 0.9,
-                  height: 0.07,
                   controller: profileController.companyNameController,
                   title: "Company name",
-                  textColor: black,
-                  titleStyle: textStyleForTextField,
-                  fillColor: Colors.white,
                   textInputType: TextInputType.text,
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 50.h),
                 CustomButton(
-                  width: Get.width,
-                  height: 0.075,
-                  color: secondaryColor,
+                  width: 1.sw,
+                  height: 0.07,
                   title: "Save changes",
                   onTap: () async {
                     await profileController.updateProfile(context);
                   },
-                  borderRadiusBottomLeft: 50,
-                  borderRadiusBottomRight: 50,
-                  borderRadiusTopLeft: 50,
-                  borderRadiusTopRight: 50,
-                  loadingColor: white,
+                  borderRadius: 50.r,
                   loading: profileController.loading.value,
-                  textStyle: textStyleForPrimaryButton,
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 30.h),
               ],
             ),
           ),

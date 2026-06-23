@@ -1,9 +1,10 @@
 import 'dart:convert';
-
 import 'package:reviews_link_v2/data/models/response/auth/login_response.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppStorage {
+
+  /// --- User Token --- ///
   static Future saveUserToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('userToken', token);
@@ -20,33 +21,7 @@ class AppStorage {
     prefs.remove('userToken');
   }
 
-  static Future saveLang(String lang) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('lang', lang);
-  }
-
-  static Future getLang() async {
-    final prefs = await SharedPreferences.getInstance();
-    String lang = prefs.getString('lang') ?? "";
-    return lang;
-  }
-
-  static Future saveFCMToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('fcmToken', token);
-  }
-
-  static Future getFCMToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('fcmToken') ?? "";
-    return token;
-  }
-
-  static Future deleteFCMToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('fcmToken');
-  }
-
+  /// --- User --- ///
   static Future<void> saveUser(User user) async {
     final prefs = await SharedPreferences.getInstance();
     String userJson = jsonEncode(user.toJson());

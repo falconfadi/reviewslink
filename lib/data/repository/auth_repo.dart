@@ -5,10 +5,10 @@ import 'package:reviews_link_v2/data/models/body/auth/forget_password_body.dart'
 import 'package:reviews_link_v2/data/models/body/auth/login_body.dart';
 import 'package:reviews_link_v2/data/models/body/auth/reset_password_body.dart';
 import 'package:reviews_link_v2/data/models/body/auth/sign_up_body.dart';
-import 'package:reviews_link_v2/data/models/body/auth/update_profile.dart';
+import 'package:reviews_link_v2/data/models/body/auth/update_profile_body.dart';
 import 'package:reviews_link_v2/data/models/body/auth/verify_code_body.dart';
 import '../../data/constant/api_constant.dart';
-import '../../data/dio/dio_client_new.dart';
+import '../../data/dio/api_client.dart';
 import 'package:get/get.dart';
 
 class AuthRepo {
@@ -136,24 +136,4 @@ class AuthRepo {
       return res;
     }
   }
-
-  //
-  // Future<ApiResponse> getNotifications(token) async {
-  //   final res = await apiClient.get(
-  //     GET_NOTIFICATIONS + '?fcmToken=$token',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       "ngrok-skip-browser-warning": "69420",
-  //       'Authorization': 'Bearer ${initController.userToken}',
-  //     },
-  //   );
-  //
-  //   if (res.isSuccess) {
-  //     print('get');
-  //     return res;
-  //   } else {
-  //     print('Failed: ${res.statusCode} - ${res.errorMessage}');
-  //     return res;
-  //   }
-  // }
 }

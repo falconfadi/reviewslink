@@ -8,24 +8,51 @@ import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
 import 'package:reviews_link_v2/data/repository/codes_repo.dart';
 import 'package:reviews_link_v2/data/repository/init_repo.dart';
 import 'package:reviews_link_v2/extensions/context_localization.dart';
-import 'package:reviews_link_v2/pages/my_codes/controller.dart';
+import 'package:reviews_link_v2/pages/main_page/my_codes/controller.dart';
 import 'package:reviews_link_v2/res/color.dart';
 import 'package:reviews_link_v2/widgets/snack_bar/top_snack_bar.dart';
 
 class MainPageController extends GetxController {
-  final pageController = PageController(initialPage: 1);
+
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final MyCodesController myCodesController = Get.find();
-  InitController initController = Get.find();
-  RxBool scanPopUpStatus = false.obs;
-
+  final pageController = PageController(initialPage: 1);
   RxInt pageIndex = 1.obs;
-  bool backButtonStatus = false;
+  RxBool scanPopUpStatus = false.obs;
   DateTime timeBackPressed = DateTime.now();
-
   TextEditingController qrTextController = TextEditingController();
   RxBool loading = false.obs;
+
+  final MyCodesController myCodesController = Get.find();
+  InitController initController = Get.find();
   CodesRepo codesRepo = CodesRepo();
+  InitRepo initRepo = InitRepo();
+
+  @override
+  void onInit() async {
+    await getInitData();
+    super.onInit();
+  }
+
+  getInitData() async {
+    initController.servicesTypeList.clear();
+    initController.currencyList.clear();
+    await initRepo.initData().then((value) {
+      if (value.code == 200) {
+        initController.servicesTypeList.addAll(
+          (value.body['services_types'] as List)
+              .map((e) => ServiceType.fromJson(e))
+              .toList(),
+        );
+        initController.currencyList.addAll(
+          (value.body['currencies'] as List)
+              .map((e) => Currencies.fromJson(e))
+              .toList(),
+        );
+      } else {
+        print('wrong ------>');
+      }
+    });
+  }
 
   Future<void> moveBetweenPages(index) async {
     pageIndex.value = index;
@@ -58,29 +85,6 @@ class MainPageController extends GetxController {
         return true;
       }
     }
-  }
-
-  InitRepo initRepo = InitRepo();
-
-  getInitData() async {
-    initController.servicesTypeList.clear();
-    initController.currencyList.clear();
-    await initRepo.initData().then((value) {
-      if (value.code == 200) {
-        initController.servicesTypeList.addAll(
-          (value.body['services_types'] as List)
-              .map((e) => ServiceType.fromJson(e))
-              .toList(),
-        );
-        initController.currencyList.addAll(
-          (value.body['currencies'] as List)
-              .map((e) => Currencies.fromJson(e))
-              .toList(),
-        );
-      } else {
-        print('wrong ------>');
-      }
-    });
   }
 
   claimCode(BuildContext context) async {
@@ -128,11 +132,5 @@ class MainPageController extends GetxController {
         }
       });
     }
-  }
-
-  @override
-  void onInit() async {
-    await getInitData();
-    super.onInit();
   }
 }

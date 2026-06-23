@@ -1,38 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:reviews_link_v2/res/app_theme.dart';
+import 'package:reviews_link_v2/res/color.dart';
+import 'package:reviews_link_v2/widgets/loading/custom_loading.dart';
 
 class CustomButton extends StatelessWidget {
   final double width;
   final double height;
-  final Color color;
   final String title;
   final VoidCallback onTap;
+  final Color? color;
   final Widget? icon;
-  final bool? loading;
-  final double? borderRadiusBottomLeft;
-  final double? borderRadiusTopRight;
-  final double? borderRadiusBottomRight;
-  final double? borderRadiusTopLeft;
-  final TextStyle textStyle;
+  final double? borderRadius;
   final Border? border;
-  final Color? loadingColor;
+  final TextStyle? textStyle;
+  final bool? loading;
   final double? padding;
 
   const CustomButton({
     required this.width,
     required this.height,
-    required this.color,
     required this.title,
     required this.onTap,
-    this.loading,
-    this.border,
-    this.borderRadiusBottomLeft,
-    this.borderRadiusTopRight,
-    this.borderRadiusBottomRight,
-    this.borderRadiusTopLeft,
+    this.color,
     this.icon,
-    required this.textStyle,
-    this.loadingColor,
+    this.borderRadius,
+    this.border,
+    this.textStyle,
+    this.loading,
     this.padding,
     Key? key,
   }) : super(key: key);
@@ -42,47 +37,33 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: Get.width * width,
-        height: Get.height * height,
-        padding: EdgeInsets.symmetric(horizontal: padding ?? 20),
+        width: 1.sw * width,
+        height: 1.sh * height,
+        padding: EdgeInsets.symmetric(horizontal: padding ?? 25.w),
         decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(borderRadiusBottomLeft ?? 10),
-            topRight: Radius.circular(borderRadiusTopRight ?? 10),
-            bottomRight: Radius.circular(borderRadiusBottomRight ?? 10),
-            topLeft: Radius.circular(borderRadiusTopLeft ?? 10),
-          ),
+          color: color ?? secondaryColor,
+          borderRadius: BorderRadius.circular(borderRadius ?? 12.r),
           border: border,
         ),
         child: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            // mainAxisAlignment:
-            //     icon == null
-            //         ? MainAxisAlignment.center
-            //         : MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              loading ?? false
-                  ? Center(
-                      child: SizedBox(
-                        height: Get.height * 0.03,
-                        width: Get.height * 0.03,
-                        child: CircularProgressIndicator(
-                          color: loadingColor ?? Colors.white,
-                        ),
-                      ),
-                    )
-                  : Text(
+              loading ?? false ? LoadingIndicator(
+                  width: 0.03.sh, height: 0.03.sh,
+                color: white,
+              ) : Text(
                       title,
                       textAlign: TextAlign.center,
                       maxLines: 2,
-                      style: textStyle,
+                      style: textStyle ?? AppTheme.headlineSmall.copyWith(
+                        color: white
+                      ),
                     ),
               icon == null
                   ? const SizedBox(width: 0)
-                  : const SizedBox(width: 10),
+                  : SizedBox(width: 10.w),
               icon ?? const Text(''),
             ],
           ),

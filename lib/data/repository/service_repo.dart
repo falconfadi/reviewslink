@@ -1,16 +1,15 @@
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/dio/api_response.dart';
-import 'package:reviews_link_v2/data/models/body/service/create_service_list_of_products_body.dart';
-import 'package:reviews_link_v2/data/models/body/service/create_service_single_product.dart';
-import 'package:reviews_link_v2/data/models/body/service/create_service_url_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_list_of_products_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_single_product_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_url_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/delete_service_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/get_services_body.dart';
-import 'package:reviews_link_v2/data/models/body/service/update_service_list_of_product_body.dart';
-import 'package:reviews_link_v2/data/models/body/service/update_service_single_product.dart';
-import 'package:reviews_link_v2/data/models/body/service/update_service_url_body.dart';
-
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_list_of_product_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_single_product_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_url_body.dart';
 import '../../data/constant/api_constant.dart';
-import '../../data/dio/dio_client_new.dart';
+import '../../data/dio/api_client.dart';
 import 'package:get/get.dart';
 
 class ServiceRepo {

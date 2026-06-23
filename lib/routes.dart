@@ -1,38 +1,38 @@
 import 'package:get/get.dart';
 import 'package:reviews_link_v2/pages/change_password/binding.dart';
 import 'package:reviews_link_v2/pages/change_password/index.dart';
-import 'package:reviews_link_v2/pages/create_account/binding.dart';
-import 'package:reviews_link_v2/pages/create_account/index.dart';
-import 'package:reviews_link_v2/pages/create_qr_request/binding.dart';
-import 'package:reviews_link_v2/pages/create_qr_request/index.dart';
-import 'package:reviews_link_v2/pages/create_service/binding.dart';
-import 'package:reviews_link_v2/pages/create_service/index.dart';
-import 'package:reviews_link_v2/pages/create_support_tickets/binding.dart';
-import 'package:reviews_link_v2/pages/create_support_tickets/index.dart';
-import 'package:reviews_link_v2/pages/forget_password/binding.dart';
-import 'package:reviews_link_v2/pages/forget_password/index.dart';
-import 'package:reviews_link_v2/pages/login/binding.dart';
-import 'package:reviews_link_v2/pages/login/index.dart';
+import 'package:reviews_link_v2/pages/auth/create_account/binding.dart';
+import 'package:reviews_link_v2/pages/auth/create_account/index.dart';
+import 'package:reviews_link_v2/pages/qr_requests/binding.dart';
+import 'package:reviews_link_v2/pages/qr_requests/create_qr_request/binding.dart';
+import 'package:reviews_link_v2/pages/qr_requests/create_qr_request/index.dart';
+import 'package:reviews_link_v2/pages/qr_requests/index.dart';
+import 'package:reviews_link_v2/pages/main_page/services/create_service/binding.dart';
+import 'package:reviews_link_v2/pages/main_page/services/create_service/index.dart';
+import 'package:reviews_link_v2/pages/support_tickets/create_support_tickets/binding.dart';
+import 'package:reviews_link_v2/pages/support_tickets/create_support_tickets/index.dart';
+import 'package:reviews_link_v2/pages/auth/forget_password/binding.dart';
+import 'package:reviews_link_v2/pages/auth/forget_password/index.dart';
+import 'package:reviews_link_v2/pages/auth/login/binding.dart';
+import 'package:reviews_link_v2/pages/auth/login/index.dart';
 import 'package:reviews_link_v2/pages/main_page/binding.dart';
 import 'package:reviews_link_v2/pages/main_page/index.dart';
-import 'package:reviews_link_v2/pages/my_codes_requests/binding.dart';
-import 'package:reviews_link_v2/pages/my_codes_requests/index.dart';
 import 'package:reviews_link_v2/pages/profile/binding.dart';
 import 'package:reviews_link_v2/pages/profile/index.dart';
-import 'package:reviews_link_v2/pages/services_list_products/binding.dart';
-import 'package:reviews_link_v2/pages/services_list_products/index.dart';
-import 'package:reviews_link_v2/pages/services_restaurant_menu/binding.dart';
-import 'package:reviews_link_v2/pages/services_restaurant_menu/index.dart';
-import 'package:reviews_link_v2/pages/services_single_product/binding.dart';
-import 'package:reviews_link_v2/pages/services_single_product/index.dart';
+import 'package:reviews_link_v2/pages/main_page/services/services_list_products/binding.dart';
+import 'package:reviews_link_v2/pages/main_page/services/services_list_products/index.dart';
+import 'package:reviews_link_v2/pages/main_page/services/services_restaurant_menu/binding.dart';
+import 'package:reviews_link_v2/pages/main_page/services/services_restaurant_menu/index.dart';
+import 'package:reviews_link_v2/pages/main_page/services/services_single_product/binding.dart';
+import 'package:reviews_link_v2/pages/main_page/services/services_single_product/index.dart';
 import 'package:reviews_link_v2/pages/splash/binding.dart';
 import 'package:reviews_link_v2/pages/splash/index.dart';
-import 'package:reviews_link_v2/pages/support_ticket_details/binding.dart';
-import 'package:reviews_link_v2/pages/support_ticket_details/index.dart';
+import 'package:reviews_link_v2/pages/support_tickets/support_ticket_details/binding.dart';
+import 'package:reviews_link_v2/pages/support_tickets/support_ticket_details/index.dart';
 import 'package:reviews_link_v2/pages/support_tickets/binding.dart';
 import 'package:reviews_link_v2/pages/support_tickets/index.dart';
-import 'package:reviews_link_v2/pages/verification_code/binding.dart';
-import 'package:reviews_link_v2/pages/verification_code/index.dart';
+import 'package:reviews_link_v2/pages/auth/verification_code/binding.dart';
+import 'package:reviews_link_v2/pages/auth/verification_code/index.dart';
 
 abstract class AppRouting {
   static List<GetPage> routes() => [
@@ -93,8 +93,8 @@ abstract class AppRouting {
     ),
     GetPage(
       name: Pages.createQrRequest.value,
-      page: () => QRRequestPage(),
-      binding: QRRequestBinding(),
+      page: () => CreateQRRequestPage(),
+      binding: CreateQRRequestBinding(),
     ),
     GetPage(
       name: Pages.createService.value,
@@ -103,8 +103,8 @@ abstract class AppRouting {
     ),
     GetPage(
       name: Pages.myQrRequests.value,
-      page: () => MyCodesRequestsPage(),
-      binding: MyCodeRequestsBinding(),
+      page: () => QrRequestsPage(),
+      binding: QrRequestsBinding(),
     ),
     GetPage(
       name: Pages.createSupportTickets.value,
