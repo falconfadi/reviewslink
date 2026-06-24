@@ -68,18 +68,6 @@ class _RestaurantMenuWidgetState extends State<RestaurantMenuWidget> {
                     }
                   },
                 ),
-                Text.rich(
-                  style: AppTheme.labelLarge.copyWith(fontSize: 15.sp,fontWeight: FontWeight.w500),
-                  TextSpan(
-                    text: "Logo",
-                    children: [
-                      TextSpan(
-                        text: ' *',
-                        style: AppTheme.labelLarge.copyWith(color: red,fontSize: 15.sp,fontWeight: FontWeight.w500),
-                      ),
-                    ],
-                  ),
-                ),
                 SizedBox(height: 6.h),
                 CustomCheckBoxListTile(
                   value: widget.createServiceController.logoVisible,

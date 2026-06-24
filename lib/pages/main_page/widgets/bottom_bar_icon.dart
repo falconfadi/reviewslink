@@ -32,8 +32,8 @@ class BottomBarIcon extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CustomSvgImage(
-              width: isTablet ? 30.w : 35.w,
-              height: isTablet ? 30.w : 35.w,
+              width: isTablet ? 25.w : 30.w,
+              height: isTablet ? 25.w : 30.w,
               image: image,
               color: select ? primaryColor : secondaryColor,
             ),

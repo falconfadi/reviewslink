@@ -24,7 +24,7 @@ class ProductsPreviewWidget extends StatelessWidget {
         Text("Products: ", style: AppTheme.displayLarge.copyWith(fontSize: 18.sp)),
         SizedBox(height: 10.h),
         SizedBox(
-          height: 1.sh * 0.25,
+          height: 1.sh * 0.28,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
