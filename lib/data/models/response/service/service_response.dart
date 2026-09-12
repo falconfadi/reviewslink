@@ -1,4 +1,3 @@
-/// ------------------------------ start
 
 class ServiceResponse {
   final int id;
@@ -9,6 +8,8 @@ class ServiceResponse {
   final String creationDate;
   final ServiceType serviceType;
   final List<ServiceCode> codes;
+  final List<ServiceReview> reviews;
+  final int reviewsCount;
 
   ServiceResponse({
     required this.id,
@@ -19,6 +20,8 @@ class ServiceResponse {
     required this.creationDate,
     required this.serviceType,
     required this.codes,
+    required this.reviews,
+    required this.reviewsCount,
   });
 
   factory ServiceResponse.fromJson(Map<String, dynamic> json) {
@@ -26,17 +29,14 @@ class ServiceResponse {
     dynamic parsedJson;
 
     switch (type.name) {
-      case "restaurant_menu":
-        parsedJson = RestaurantMenuData.fromJson(json['json_data'] ?? {});
-        break;
-      case "list_of_products":
-        parsedJson = ListOfProductsData.fromJson(json['json_data'] ?? {});
-        break;
-      case "product":
-        parsedJson = SingleProductData.fromJson(json['json_data'] ?? {});
+      case "rating_form":
+        parsedJson = RatingFormServiceData.fromJson(json['json_data'] ?? {});
         break;
       case "url":
         parsedJson = UrlServiceData.fromJson(json['json_data'] ?? {});
+        break;
+      case "social_media_cards_unlimited" || "social_media_cards_4" || "social_media_cards_8":
+        parsedJson = SocialMediaServiceData.fromJson(json['json_data'] ?? {});
         break;
       default:
         parsedJson = json['json_data'];
@@ -53,6 +53,11 @@ class ServiceResponse {
       codes: (json['codes'] as List? ?? [])
           .map((e) => ServiceCode.fromJson(e))
           .toList(),
+      reviews: (json['reviews'] as List? ?? [])
+          .map((e) => ServiceReview.fromJson(e))
+          .toList(),
+      reviewsCount: json['reviews_count'] ?? 0,
+
     );
   }
 }
@@ -79,8 +84,6 @@ class ServiceType {
     );
   }
 }
-
-/// ------------------------------ end
 
 class ServiceCode {
   final int id;
@@ -129,6 +132,35 @@ class ServiceCode {
   }
 }
 
+class ServiceReview {
+  final int id;
+  final int serviceId;
+  final int rating;
+  final String comment;
+  final String createdAt;
+  final String feedbackType;
+
+  ServiceReview({
+    required this.id,
+    required this.serviceId,
+    required this.rating,
+    required this.comment,
+    required this.createdAt,
+    required this.feedbackType,
+  });
+
+  factory ServiceReview.fromJson(Map<String, dynamic> json) {
+    return ServiceReview(
+      id: json['id'] ?? 0,
+      serviceId: json['service_id'] ?? 0,
+      rating: json['rating'] ?? 0,
+      comment: json['comment'] ?? '',
+      createdAt: json['created_at'] ?? '',
+      feedbackType: json['feedback_type'] ?? '',
+    );
+  }
+}
+
 class CodeCategory {
   final int id;
   final String name;
@@ -145,217 +177,35 @@ class CodeCategory {
   }
 }
 
-class RestaurantMenuData {
-  final String pageTitle;
-  final String description;
-  final Header header;
-  final ThemeColors theme;
-  final BannerModel banner;
-  final List<MenuProduct> products;
+class RatingFormServiceData {
+  final String formTitle;
+  final String formDescription;
+  final bool allowComments;
+  final int maxStars;
+  final String providerImage;
 
-  RestaurantMenuData({
-    required this.pageTitle,
-    required this.description,
-    required this.header,
-    required this.theme,
-    required this.banner,
-    required this.products,
+  RatingFormServiceData({
+    required this.formTitle,
+    required this.formDescription,
+    required this.allowComments,
+    required this.maxStars,
+    required this.providerImage,
   });
 
-  factory RestaurantMenuData.fromJson(Map<String, dynamic> json) {
-    return RestaurantMenuData(
-      pageTitle: json['page_title'] ?? '',
-      description: json['description'] ?? '',
-      header: Header.fromJson(json['header'] ?? {}),
-      theme: ThemeColors.fromJson(json['theme'] ?? {}),
-      banner: BannerModel.fromJson(json['banner'] ?? {}),
-      products: (json['products'] as List? ?? [])
-          .map((e) => MenuProduct.fromJson(e))
-          .toList(),
-    );
-  }
-}
+  factory RatingFormServiceData.fromJson(Map<String, dynamic> json) {
+    return RatingFormServiceData(
+        formTitle: json['form_title'] ?? '',
+        formDescription: json['form_description'] ?? '',
+        allowComments: json['allow_comments'] ?? '',
+        maxStars: json['max_stars'] ?? '',
+        providerImage: json['provider_image'] ?? '',
 
-class MenuProduct {
-  final String name;
-  final String price;
-  final String description;
-  final String? image;
-
-  MenuProduct({
-    required this.name,
-    required this.price,
-    required this.description,
-    this.image,
-  });
-
-  factory MenuProduct.fromJson(Map<String, dynamic> json) {
-    return MenuProduct(
-      name: json['name'] ?? '',
-      price: json['price'] ?? '',
-      description: json['des'] ?? '',
-      image: json['image'],
-    );
-  }
-}
-
-class Header {
-  final String? logo;
-  final int showLogo;
-
-  Header({this.logo, required this.showLogo});
-
-  factory Header.fromJson(Map<String, dynamic> json) {
-    return Header(logo: json['logo'], showLogo: json['show_logo'] ?? 0);
-  }
-}
-
-class ThemeColors {
-  final ColorSet colors;
-
-  ThemeColors({required this.colors});
-
-  factory ThemeColors.fromJson(Map<String, dynamic> json) {
-    return ThemeColors(colors: ColorSet.fromJson(json['colors'] ?? {}));
-  }
-}
-
-class ColorSet {
-  final String bg;
-  final String panel;
-  final String text;
-  final String muted;
-  final String accent;
-
-  ColorSet({
-    required this.bg,
-    required this.panel,
-    required this.text,
-    required this.muted,
-    required this.accent,
-  });
-
-  factory ColorSet.fromJson(Map<String, dynamic> json) {
-    return ColorSet(
-      bg: json['bg'] ?? '',
-      panel: json['panel'] ?? '',
-      text: json['text'] ?? '',
-      muted: json['muted'] ?? '',
-      accent: json['accent'] ?? '',
-    );
-  }
-}
-
-class BannerModel {
-  final String? image;
-  final String alt;
-  final int show;
-
-  BannerModel({this.image, required this.alt, required this.show});
-
-  factory BannerModel.fromJson(Map<String, dynamic> json) {
-    return BannerModel(
-      image: json['image'],
-      alt: json['alt'] ?? '',
-      show: json['show'] ?? 0,
-    );
-  }
-}
-
-class ListOfProductsData {
-  final String pageTitle;
-  final String? logo;
-  final List<ListProduct> products;
-
-  ListOfProductsData({
-    required this.pageTitle,
-    this.logo,
-    required this.products,
-  });
-
-  factory ListOfProductsData.fromJson(Map<String, dynamic> json) {
-    return ListOfProductsData(
-      pageTitle: json['page_title'] ?? '',
-      logo: json['logo'],
-      products: (json['products'] as List? ?? [])
-          .map((e) => ListProduct.fromJson(e))
-          .toList(),
-    );
-  }
-}
-
-class ListProduct {
-  final String title;
-  final String description;
-  final String price;
-  final String? image;
-
-  ListProduct({
-    required this.title,
-    required this.description,
-    required this.price,
-    this.image,
-  });
-
-  factory ListProduct.fromJson(Map<String, dynamic> json) {
-    return ListProduct(
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      price: json['price'] ?? '',
-      image: json['image'],
-    );
-  }
-}
-
-class SingleProductData {
-  final int currencyId;
-  final bool multiCurrency;
-  final List<SupermarketProduct> supermarket;
-
-  SingleProductData({
-    required this.currencyId,
-    required this.multiCurrency,
-    required this.supermarket,
-  });
-
-  factory SingleProductData.fromJson(Map<String, dynamic> json) {
-    return SingleProductData(
-      currencyId: json['currency_id'] ?? 0,
-      multiCurrency: json['multi_currency'] ?? false,
-      supermarket: (json['supermarket'] as List? ?? [])
-          .map((e) => SupermarketProduct.fromJson(e))
-          .toList(),
-    );
-  }
-}
-
-class SupermarketProduct {
-  final String name;
-  final String description;
-  final String productId;
-  final String price;
-  final String? image;
-
-  SupermarketProduct({
-    required this.name,
-    required this.description,
-    required this.productId,
-    required this.price,
-    this.image,
-  });
-
-  factory SupermarketProduct.fromJson(Map<String, dynamic> json) {
-    return SupermarketProduct(
-      name: json['name'] ?? '',
-      description: json['description'] ?? '',
-      productId: json['product_id'] ?? '',
-      price: json['price'] ?? '',
-      image: json['image'],
     );
   }
 }
 
 class UrlServiceData {
+
   final String url;
   final String title;
 
@@ -363,5 +213,148 @@ class UrlServiceData {
 
   factory UrlServiceData.fromJson(Map<String, dynamic> json) {
     return UrlServiceData(url: json['url'] ?? '', title: json['title'] ?? '');
+  }
+}
+
+class SocialMediaServiceData {
+
+  final SocialMediaProfileModel? profile;
+  final SocialMediaSettingsModel? settings;
+  final List<SocialMediaCardModel>? cards;
+  final List<QuickIconModel>? quickIcons;
+
+  SocialMediaServiceData({
+    this.profile,
+    this.settings,
+    this.cards,
+    this.quickIcons,
+  });
+
+  factory SocialMediaServiceData.fromJson(Map<String, dynamic> json) {
+    return SocialMediaServiceData(
+      profile: json['profile'] != null ? SocialMediaProfileModel.fromJson(json['profile']) : null,
+      settings: json['settings'] != null ? SocialMediaSettingsModel.fromJson(json['settings']) : null,
+      cards: json['cards'] != null ? List<SocialMediaCardModel>.from(json['cards'].map((x) =>
+          SocialMediaCardModel.fromJson(x))) : null,
+      quickIcons: json['quick_icons'] != null ? List<QuickIconModel>.from(json['quick_icons'].map((x) =>
+          QuickIconModel.fromJson(x))) : null,
+    );
+  }
+}
+
+class SocialMediaProfileModel {
+
+  final String? displayName;
+  final String? handle;
+  final String? bio;
+  final String? avatar;
+  final String? background;
+  final String? bsAvatar;
+  final bool? verified;
+
+  SocialMediaProfileModel({
+    this.displayName,
+    this.handle,
+    this.bio,
+    this.avatar,
+    this.background,
+    this.bsAvatar,
+    this.verified,
+  });
+
+  factory SocialMediaProfileModel.fromJson(Map<String, dynamic> json) {
+    return SocialMediaProfileModel(
+      displayName: json['display_name'],
+      handle: json['handle'],
+      bio: json['bio'],
+      avatar: json['avatar'],
+      background: json['background'],
+      bsAvatar: json['bs_avatar'],
+      verified: json['verified'],
+    );
+  }
+}
+
+class SocialMediaSettingsModel {
+
+  final String? type;
+  final int? maxCards;
+  final bool? searchEnabled;
+  final bool? showCopyButton;
+  final bool? showQuickIcons;
+
+  SocialMediaSettingsModel({
+    this.type,
+    this.maxCards,
+    this.searchEnabled,
+    this.showCopyButton,
+    this.showQuickIcons,
+  });
+
+  factory SocialMediaSettingsModel.fromJson(Map<String, dynamic> json) {
+    return SocialMediaSettingsModel(
+      type: json['type'],
+      maxCards: json['max_cards'],
+      searchEnabled: json['search_enabled'],
+      showCopyButton: json['show_copy_button'],
+      showQuickIcons: json['show_quick_icons'],
+    );
+  }
+}
+
+class SocialMediaCardModel {
+
+  final String? platform;
+  final String? category;
+  final String? icon;
+  final String? title;
+  final String? handle;
+  final String? description;
+  final String? url;
+  final String? buttonText;
+
+  SocialMediaCardModel({
+    this.platform,
+    this.category,
+    this.icon,
+    this.title,
+    this.handle,
+    this.description,
+    this.url,
+    this.buttonText,
+  });
+
+  factory SocialMediaCardModel.fromJson(Map<String, dynamic> json) {
+    return SocialMediaCardModel(
+      platform: json['platform'],
+      category: json['category'],
+      icon: json['icon'],
+      title: json['title'],
+      handle: json['handle'],
+      description: json['description'],
+      url: json['url'],
+      buttonText: json['button_text'],
+    );
+  }
+}
+
+class QuickIconModel {
+
+  final String? platform;
+  final String? icon;
+  final String? url;
+
+  QuickIconModel({
+    this.platform,
+    this.icon,
+    this.url,
+  });
+
+  factory QuickIconModel.fromJson(Map<String, dynamic> json) {
+    return QuickIconModel(
+      platform: json['platform'],
+      icon: json['icon'],
+      url: json['url'],
+    );
   }
 }

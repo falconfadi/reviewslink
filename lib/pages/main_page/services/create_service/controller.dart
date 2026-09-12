@@ -1,26 +1,23 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as getx;
 import 'package:get/get_rx/get_rx.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
-import 'package:reviews_link_v2/data/constant/api_constant.dart';
-import 'package:reviews_link_v2/data/models/body/service/create/create_service_list_of_products_body.dart';
-import 'package:reviews_link_v2/data/models/body/service/create/create_service_restaurant_body.dart';
-import 'package:reviews_link_v2/data/models/body/service/create/create_service_single_product_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_rating_form_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_social_media_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_url_body.dart';
-import 'package:reviews_link_v2/data/models/body/service/update/update_service_list_of_product_body.dart' as updateModel;
-import 'package:reviews_link_v2/data/models/body/service/update/update_service_restaurant_body.dart' as updateModelRestaurant;
-import 'package:reviews_link_v2/data/models/body/service/update/update_service_single_product_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_rating_form_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_social_media_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/update/update_service_url_body.dart';
 import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
 import 'package:reviews_link_v2/data/repository/service_repo.dart';
 import 'package:reviews_link_v2/extensions/context_localization.dart';
 import 'package:reviews_link_v2/pages/main_page/services/controller.dart';
-import 'package:reviews_link_v2/pages/main_page/services/create_service/models/product_model.dart';
 import 'package:reviews_link_v2/data/models/response/service/service_response.dart' as serviceModelResponse;
+import 'package:reviews_link_v2/pages/main_page/services/create_service/models/social_media_card_model.dart';
+import 'package:reviews_link_v2/res/app_images.dart';
 import 'package:reviews_link_v2/widgets/snack_bar/top_snack_bar.dart';
 
 class CreateServiceController extends getx.GetxController {
@@ -29,60 +26,116 @@ class CreateServiceController extends getx.GetxController {
   ServiceController serviceController = getx.Get.find();
   ServiceRepo serviceRepo = ServiceRepo();
 
-  TextEditingController pageTitleController = TextEditingController();
-  TextEditingController nameUrlController = TextEditingController();
-  TextEditingController titleController = TextEditingController();
-  TextEditingController urlController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController bannerTextController = TextEditingController();
-  final allowedTypes = [
-    "url", "restaurant_menu",
-    "product", "list_of_products",
-  ];
-  final RxList<ProductModel> products = <ProductModel>[ProductModel()].obs;
-  ProductModel singleProduct = ProductModel();
-  List<File> productsImage = [];
-  List<String> currencies = ["USD", "\$"];
-  getx.RxBool multiCurrency = false.obs;
-  getx.Rxn<Currencies> selectedCurrency = getx.Rxn<Currencies>();
-  getx.Rx<File> logo = File('').obs;
-  String? logoUrl;
-  getx.Rx<File> headerLogo = File('').obs;
-  String? headerLogoUrl;
-  getx.Rx<File> bannerImage = File('').obs;
-  String? bannerImageUrl;
   ServiceType? selectedType;
   getx.RxBool loading = false.obs;
-  bool bannerVisible = false;
-  bool logoVisible = false;
+  /// url
+  TextEditingController titleController = TextEditingController();
+  TextEditingController urlController = TextEditingController();
+  /// rating form
+  TextEditingController formRatingTitleController = TextEditingController();
+  TextEditingController formRatingDescriptionController = TextEditingController();
+  RxBool allowComments = true.obs;
+  RxInt maxStars = 5.obs;
+  /// social media
+  TextEditingController displayNameController = TextEditingController();
+  TextEditingController bioController = TextEditingController();
+  getx.Rx<File> avatar = File('').obs;
+  String? avatarUrl;
+  getx.Rx<File> background = File('').obs;
+  String? backgroundUrl;
+  RxList<SocialMediaCardModel> availableSocialMediaCards  = <SocialMediaCardModel>[
+    SocialMediaCardModel(
+        name: 'Instagram',
+        title: 'Instagram',
+        icon: INSTAGRAM,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Google',
+        name: 'Google',
+        icon: GOOGLE,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Youtube',
+        name: 'Youtube',
+        icon: YOUTUBE,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Facebook',
+        name: 'Facebook',
+        icon: FACEBOOK,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Whatsapp',
+        name: 'Whatsapp',
+        icon: WHATSAPP,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Tiktok',
+        name: 'Tiktok',
+        icon: TIKTOK,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'LinkedIn',
+        name: 'LinkedIn',
+        icon: LINKEDIN,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Booking.com',
+        name: 'Booking.com',
+        icon: BOOKING,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Tripadvisor',
+        name: 'Tripadvisor',
+        icon: TRIPADVISOR,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'Trustpilot',
+        name: 'Trustpilot',
+        icon: TRUSTPILOT,
+        isFixed: true
+    ),
+    SocialMediaCardModel(
+        title: 'WeChat',
+        name: 'WeChat',
+        icon: WECHAT,
+        isFixed: true
+    ),
+  ].obs;
+  RxList<SocialMediaCardModel> socialMediaCardsList = <SocialMediaCardModel>[].obs;
+
+  final allowedTypes = [
+    "url",
+    "social_media_cards_4",
+    "social_media_cards_8",
+    "social_media_cards_unlimited",
+    "rating_form"
+  ];
   bool? editStatus;
   serviceModelResponse.ServiceResponse? chosenServiceToEdit;
-  ThemeColorModel? theme;
 
   @override
   void onInit() {
-    theme = ThemeColorModel(
-      colors: ThemeColors(
-        bg: "#fffdf7",
-        panel: "#ffffff",
-        text: "#111827",
-        muted: "#6b7280",
-        accent: "#f97316",
-      ),
-    );
     editStatus = getx.Get.arguments[0];
     if (editStatus == true) {
       print('@@@@@@@@@@@');
       chosenServiceToEdit = getx.Get.arguments[1];
       selectedType = chosenServiceToEdit?.serviceType.toInitModel();
-      if (selectedType!.id == 1) {
-        fillRestaurantMenuFields();
-      } else if (selectedType!.id == 2) {
+      if (selectedType!.id == 2) {
         fillUrlFields();
-      } else if (selectedType!.id == 3) {
-        fillSingleProductFields();
-      } else if (selectedType!.id == 4) {
-        fillListOfProductsFields();
+      } else if (selectedType!.id == 8) {
+        fillRatingFormFields();
+      } else if (selectedType!.id == 5 || selectedType!.id == 6 || selectedType!.id == 7) {
+        fillSocialMediaFields();
       }
       print('@@@@@@@@@@@');
     }
@@ -90,135 +143,36 @@ class CreateServiceController extends getx.GetxController {
   }
 
   /// for Edit
-  fillRestaurantMenuFields() {
-    pageTitleController.text = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).pageTitle;
-
-    descriptionController.text = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).description;
-
-    headerLogoUrl = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).header.logo;
-
-    logoVisible = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).header.showLogo == 1;
-
-    theme!.colors.bg = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).theme.colors.bg;
-
-    theme!.colors.panel = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).theme.colors.panel;
-
-    theme!.colors.text = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).theme.colors.text;
-
-    theme!.colors.muted = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).theme.colors.muted;
-
-    theme!.colors.accent = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).theme.colors.accent;
-
-    bannerImageUrl = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).banner.image;
-
-    bannerVisible = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).banner.show == 1;
-
-    bannerTextController.text = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).banner.alt;
-
-    products.clear();
-    products.value = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.RestaurantMenuData).products.map
-    <ProductModel>((item) {
-          final product = ProductModel();
-          product.title.text = item.name;
-          product.description.text = item.description;
-          product.price.text = item.price;
-          product.imageUrl = item.image;
-          return product;
-        }).toList();
-  }
-  fillSingleProductFields() {
-    String currencyId = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.SingleProductData).currencyId.toString();
-
-    selectedCurrency.value = initController.currencyList.firstWhere(
-      (currency) => currency.id == currencyId,
-      orElse: () => Currencies(),
-    );
-    multiCurrency.value = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.SingleProductData).multiCurrency;
-
-    singleProduct.productId.text = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.SingleProductData).supermarket.first.productId;
-
-    singleProduct.title.text = (chosenServiceToEdit!.jsonData as
-    serviceModelResponse.SingleProductData).supermarket.first.name;
-
-    singleProduct.description.text =
-        (chosenServiceToEdit!.jsonData as
-        serviceModelResponse.SingleProductData).supermarket.first.description;
-
-    singleProduct.price.text = (chosenServiceToEdit!.jsonData as
-        serviceModelResponse.SingleProductData).supermarket.first.price;
-
-    singleProduct.imageUrl =
-        (chosenServiceToEdit!.jsonData as
-        serviceModelResponse.SingleProductData).supermarket.first.image;
-  }
-  fillListOfProductsFields() {
-    pageTitleController.text =
-        (chosenServiceToEdit!.jsonData
-        as serviceModelResponse.ListOfProductsData)
-            .pageTitle;
-    logoUrl =
-        (chosenServiceToEdit!.jsonData
-        as serviceModelResponse.ListOfProductsData)
-            .logo;
-
-    products.value =
-        (chosenServiceToEdit!.jsonData
-        as serviceModelResponse.ListOfProductsData)
-            .products
-            .map<ProductModel>((item) {
-          final product = ProductModel();
-          product.title.text = item.title;
-          product.description.text = item.description;
-          product.price.text = item.price;
-          product.imageUrl = item.image;
-          return product;
-        })
-            .toList();
-    print('___________');
-    print(logoUrl);
-    print(products.first.imageUrl);
-    print(products.last.imageUrl);
-    print('___________');
-  }
   fillUrlFields() {
-    urlController.text = (chosenServiceToEdit!.jsonData as
-        serviceModelResponse.UrlServiceData).url;
+    urlController.text = (chosenServiceToEdit!.jsonData as serviceModelResponse.UrlServiceData).url;
+    titleController.text = (chosenServiceToEdit!.jsonData as serviceModelResponse.UrlServiceData).title;
+  }
+  fillRatingFormFields() {
+    formRatingTitleController.text = (chosenServiceToEdit!.jsonData as serviceModelResponse.RatingFormServiceData).formTitle;
+    formRatingDescriptionController.text = (chosenServiceToEdit!.jsonData as serviceModelResponse.RatingFormServiceData).formDescription;
+    allowComments.value = (chosenServiceToEdit!.jsonData as serviceModelResponse.RatingFormServiceData).allowComments;
+    maxStars.value = (chosenServiceToEdit!.jsonData as serviceModelResponse.RatingFormServiceData).maxStars;
+  }
+  fillSocialMediaFields() {
+    final socialMediaData = chosenServiceToEdit!.jsonData as serviceModelResponse.SocialMediaServiceData;
 
-    titleController.text = (chosenServiceToEdit!.jsonData as
-        serviceModelResponse.UrlServiceData).title;
+    displayNameController.text = socialMediaData.profile!.displayName ?? '';
+    bioController.text = socialMediaData.profile!.bio ?? '';
+    avatarUrl = socialMediaData.profile!.avatar;
+    backgroundUrl = socialMediaData.profile!.background;
+    initializeSocialMediaCardsForEdit(socialMediaData.cards ?? []);
   }
 
-  void addProduct() {
-    products.add(ProductModel());
-    update();
-  }
-
-  void removeProduct(int index) {
-    products.removeAt(index);
-    update();
-  }
-
-  Color hexToColor(String hex) {
-    final buffer = StringBuffer();
-    if (hex.length == 7) buffer.write('ff');
-    buffer.write(hex.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
+  choseSaveOption(BuildContext context) async {
+    if (selectedType!.name == 'url') {
+      await createServiceURL(context);
+    } else if (selectedType!.name == 'rating_form') {
+      await createServiceRatingForm(context);
+    } else if (selectedType!.name == "social_media_cards_4" ||
+        selectedType!.name == "social_media_cards_8" ||
+        selectedType!.name == "social_media_cards_unlimited") {
+      await createServiceSocialMedia(context);
+    }
   }
 
   String formatText(String text) {
@@ -241,18 +195,6 @@ class CreateServiceController extends getx.GetxController {
     return null;
   }
 
-  choseSaveOption(BuildContext context) async {
-    if (selectedType!.name == 'url') {
-      await createServiceURL(context);
-    } else if (selectedType!.name == 'product') {
-      await createServiceSingleProduct(context);
-    } else if (selectedType!.name == "list_of_products") {
-      await createServiceListOfProducts(context);
-    } else if (selectedType!.name == "restaurant_menu") {
-      await createServiceRestaurant(context);
-    }
-  }
-
   Future<void> createServiceURL(BuildContext context) async {
     Constant.closeKeyBoard();
     if (!loading.value) {
@@ -261,7 +203,6 @@ class CreateServiceController extends getx.GetxController {
         await serviceRepo.createServiceUrl(
           CreateServiceUrlBody(
             title: titleController.text,
-            name: nameUrlController.text,
             serviceTypeId: selectedType!.id.toString(),
             url: urlController.text,
           ),
@@ -270,7 +211,6 @@ class CreateServiceController extends getx.GetxController {
             loading.value = false;
             titleController.clear();
             urlController.clear();
-            nameUrlController.clear();
             serviceController.allServices.insert(0,
               serviceModelResponse.ServiceResponse.fromJson(
                 value.body['service'],
@@ -286,27 +226,23 @@ class CreateServiceController extends getx.GetxController {
     }
   }
 
-  Future<void> createServiceSingleProduct(BuildContext context) async {
+  Future<void> createServiceRatingForm(BuildContext context) async {
     Constant.closeKeyBoard();
     if (!loading.value) {
-      if (isSingleProductValid()) {
+      if (formRatingTitleController.text.isNotEmpty) {
         loading.value = true;
-        await serviceRepo.createServiceSingleProduct(
-          CreateServiceSingleProductBody(
-            serviceTypeId: selectedType!.id.toString(),
-            name: singleProduct.title.text,
-            description: singleProduct.description.text,
-            productId: singleProduct.productId.text,
-            currencyId: selectedCurrency.value!.id,
-            multiCurrency: multiCurrency.toString(),
-            price: singleProduct.price.text,
-            productName: singleProduct.title.text,
-            file: singleProduct.image.value,
+        await serviceRepo.createServiceRatingForm(
+          CreateServiceRatingFormBody(
+              serviceTypeId: selectedType!.id.toString(),
+              title: formRatingTitleController.text,
+              description: formRatingDescriptionController.text,
+              allowComments: allowComments.value == true ? 1 : 0,
+              maxStars: maxStars.value
           ),
         ).then((value) {
           if (value.code == 201) {
             loading.value = false;
-            clearSingleProduct();
+            clearFormRatingData();
             serviceController.allServices.insert(0,
               serviceModelResponse.ServiceResponse.fromJson(
                 value.body['service'],
@@ -322,216 +258,181 @@ class CreateServiceController extends getx.GetxController {
     }
   }
 
-  bool isSingleProductValid() {
-    return selectedType?.id != null &&
-        (singleProduct.title.text.trim().isNotEmpty) &&
-        selectedCurrency.value!.id != null &&
-        (singleProduct.price.text.trim().isNotEmpty) &&
-        (singleProduct.image.value.path.isNotEmpty);
-  }
+  bool validateSocialMediaCards(BuildContext context) {
+    final isUnlimited = selectedType?.name == "social_media_cards_unlimited";
 
-  void clearSingleProduct() {
-    selectedCurrency.value = null;
-    multiCurrency.value = false;
-    singleProduct.title.clear();
-    singleProduct.description.clear();
-    singleProduct.productId.clear();
-    singleProduct.price.clear();
-    singleProduct.image.value = File('');
-  }
+    if (isUnlimited) {
+      final fixedCards = socialMediaCardsList.where((card) => card.isFixed);
+      final customCards = socialMediaCardsList.where((card) => !card.isFixed);
 
-  void fillProductImages() {
-    productsImage.clear();
+      final enabledFixedCards = fixedCards.where((card) => card.enabled == true);
 
-    for (var product in products) {
-      if (product.image.value.path.isNotEmpty) {
-        productsImage.add(product.image.value);
-      }
-    }
-  }
-
-  void clearData() {
-    products.clear();
-    productsImage.clear();
-    descriptionController.clear();
-    headerLogo.value = File('');
-    logoVisible = false;
-    bannerTextController.clear();
-    bannerVisible = false;
-    bannerImage.value = File('');
-    products.add(ProductModel());
-    pageTitleController.clear();
-    logo.value = File('');
-  }
-
-  Future<void> createServiceListOfProducts(BuildContext context) async {
-    Constant.closeKeyBoard();
-    if (!loading.value) {
-      if (isListOfProductsValid()) {
-        fillProductImages();
-        print("Number of product images: ${productsImage.length}");
-        loading.value = true;
-        try {
-          final body = CreateServiceListOfProductsBody(
-            serviceTypeId: selectedType!.id.toString(),
-            name: pageTitleController.text.trim(),
-            pageTitle: pageTitleController.text.trim(),
-            products: products.map((p) => productModelToRequest(p)).toList(),
-            productImages: productsImage,
-            logo: logo.value,
-          );
-          FormData formData = await body.toFormData();
-          Dio dio = Dio();
-          final response = await dio.post(
-            baseUrl + CREATE_SERVICES,
-            data: formData,
-            options: Options(
-              headers: {
-                'Authorization': 'Bearer ${initController.userData!.token}',
-                'Content-Type': 'multipart/form-data',
-              },
-            ),
-          );
-          if (response.statusCode == 201) {
-            clearData();
-            serviceController.allServices.insert(0,
-              serviceModelResponse.ServiceResponse.fromJson(
-                response.data['body']['service'],
-              ),
-            );
-            TopSnackBar.success(
-              context,
-              response.data['message'] ?? "Service created successfully",
-            );
-          } else {
-            TopSnackBar.warning(context, "Failed: ${response.data}");
-          }
-        } catch (e) {
-          print("Error creating service: $e");
-          TopSnackBar.warning(context, "Something went wrong");
-        } finally {
-          loading.value = false;
+      for (final card in enabledFixedCards) {
+        if (!_validateCardFields(context, card)) {
+          return false;
         }
-      } else {
-        loading.value = false;
-        TopSnackBar.warning(context, context.localizations.empty_field);
       }
-    }
-  }
 
-  bool isListOfProductsValid() {
-    if (pageTitleController.text.toString().trim().isEmpty) return false;
-    if (logo.value.path.isEmpty) return false;
-    if (products.isEmpty) return false;
-    for (var product in products) {
-      if (product.title.toString().trim().isEmpty) return false;
-      if (product.price.toString().trim().isEmpty) return false;
-      if (product.image.value.path == "") return false;
+      bool hasValidCustomCard = false;
+
+      for (final card in customCards) {
+        if (card.title!.trim().isEmpty && card.url!.trim().isEmpty) {
+          continue;
+        }
+
+        if (card.title!.trim().isEmpty || card.url!.trim().isEmpty) {
+          TopSnackBar.warning(context, context.localizations.empty_field);
+          return false;
+        }
+        hasValidCustomCard = true;
+      }
+
+      if (enabledFixedCards.isEmpty && !hasValidCustomCard) {
+        TopSnackBar.warning(context, "Enable at least one social media card");
+        return false;
+      }
+      return true;
+    }
+
+    final enabledCards =
+    socialMediaCardsList.where((card) => card.enabled == true);
+
+    if (enabledCards.isEmpty) {
+      TopSnackBar.warning(context, "Enable at least one social media card");
+      return false;
+    }
+
+    for (final card in enabledCards) {
+      if (!_validateCardFields(context, card)) {
+        return false;
+      }
     }
     return true;
   }
 
-  ProductRequestModel productModelToRequest(ProductModel product) {
-    return ProductRequestModel(
-      title: product.title.text.trim(),
-      description: product.description.text.trim(),
-      price: product.price.text.trim(),
-    );
-  }
-
-  Future<void> createServiceRestaurant(BuildContext context) async {
-    Constant.closeKeyBoard();
-    if (!loading.value) {
-      if (isRestaurantValuesValid()) {
-        fillProductImages();
-        print("Number of product images: ${productsImage.length}");
-        loading.value = true;
-        try {
-          final body = CreateServiceRestaurantBody(
-            serviceTypeId: selectedType!.id.toString(),
-            pageTitle: pageTitleController.text.trim(),
-            description: descriptionController.text.trim(),
-            headerLogo: headerLogo.value,
-            showLogo: logoVisible,
-            theme: theme,
-            bannerImage: bannerImage.value,
-            bannerShow: bannerVisible,
-            bannerAlt: bannerTextController.text.trim(),
-            products: products
-                .map((p) => productModelRestaurantToRequest(p))
-                .toList(),
-            productImages: productsImage,
-          );
-          FormData formData = await body.toFormData();
-          Dio dio = Dio();
-          final response = await dio.post(
-            baseUrl + CREATE_SERVICES,
-            data: formData,
-            options: Options(
-              headers: {
-                'Authorization': 'Bearer ${initController.userData!.token}',
-                'Content-Type': 'multipart/form-data',
-              },
-            ),
-          );
-
-          if (response.statusCode == 201 || response.statusCode == 200) {
-            clearData();
-            serviceController.allServices.insert(0,
-              serviceModelResponse.ServiceResponse.fromJson(
-                response.data['body']['service'],
-              ),
-            );
-            TopSnackBar.success(
-              context,
-              response.data['message'] ?? "Service created successfully",
-            );
-          } else {
-            TopSnackBar.warning(context, "Failed: ${response.data}");
-          }
-        } catch (e) {
-          print("Error creating service: $e");
-          TopSnackBar.warning(context, "Something went wrong");
-        } finally {
-          loading.value = false;
-        }
-      } else {
-        loading.value = false;
-        TopSnackBar.warning(context, context.localizations.empty_field);
-      }
+  bool _validateCardFields(BuildContext context, SocialMediaCardModel card) {
+    if (card.title?.trim().isEmpty ?? true) {
+      TopSnackBar.warning(context, context.localizations.empty_field);
+      return false;
     }
-  }
 
-  bool isRestaurantValuesValid() {
-    if (pageTitleController.text.toString().trim().isEmpty) return false;
-    if (headerLogo.value.path == '') return false;
-    if (bannerImage.value.path == '') return false;
-    for (var product in products) {
-      if (product.title.toString().trim().isEmpty) return false;
-      if (product.price.toString().trim().isEmpty) return false;
-      if (product.image.value.path == "") return false;
+    if (card.url?.trim().isEmpty ?? true) {
+      TopSnackBar.warning(context, context.localizations.empty_field);
+      return false;
     }
+
     return true;
   }
 
-  ProductResRequestModel productModelRestaurantToRequest(ProductModel product) {
-    return ProductResRequestModel(
-      title: product.title.text.trim(),
-      description: product.description.text.trim(),
-      price: product.price.text.trim(),
-    );
+  Future<void> createServiceSocialMedia(BuildContext context) async {
+    Constant.closeKeyBoard();
+    if (loading.value) {
+      return;
+    }
+    if (displayNameController.text.trim().isEmpty ||
+        bioController.text.trim().isEmpty) {
+      TopSnackBar.warning(context, context.localizations.empty_field);
+      return;
+    }
+
+    if (!validateSocialMediaCards(context)) {
+      return;
+    }
+    loading.value = true;
+    await serviceRepo.createServiceSocialMedia(
+      CreateServiceSocialMediaBody(
+        serviceTypeId: selectedType!.id.toString(),
+        displayName: displayNameController.text,
+        bio: bioController.text,
+        avatar: avatar.value,
+        background: background.value,
+        socialMediaCards: socialMediaCardsList.toList(),
+      ),
+    ).then((value) {
+      if (value.code == 201) {
+        loading.value = false;
+        clearSocialMediaData();
+        serviceController.allServices.insert(
+          0,
+          serviceModelResponse.ServiceResponse.fromJson(
+            value.body['service'],
+          ),
+        );
+        TopSnackBar.success(context, value.message);
+      } else {
+        loading.value = false;
+        TopSnackBar.alert(context, value.message);
+      }
+    });
   }
 
   choseUpdateOption(BuildContext context) async {
     if (selectedType!.name == 'url') {
       await updateServiceURL(context);
-    } else if (selectedType!.name == 'product') {
-      await updateServiceSingleProduct(context);
-    } else if (selectedType!.name == "list_of_products") {
-      await updateServiceListOfProducts(context);
-    } else if (selectedType!.name == "restaurant_menu") {
-      await updateServiceRestaurant(context);
+    } else if (selectedType!.name == 'rating_form') {
+      await updateServiceRatingForm(context);
+    } else if (selectedType!.name == "social_media_cards_4" ||
+        selectedType!.name == "social_media_cards_8" ||
+        selectedType!.name == "social_media_cards_unlimited") {
+      await updateServiceSocialMedia(context);
     }
+  }
+
+  void initializeSocialMediaCardsForEdit(List<serviceModelResponse.SocialMediaCardModel> apiCards) {
+    final typeName = selectedType?.name;
+
+    int fixedCount;
+
+    if (typeName == "social_media_cards_4") {
+      fixedCount = 4;
+    } else if (typeName == "social_media_cards_8") {
+      fixedCount = 9;
+    } else if (typeName == "social_media_cards_unlimited") {
+      fixedCount = 11;
+    } else {
+      return;
+    }
+    initializeSocialMediaCards(fixedCount);
+
+    for (final apiCard in apiCards) {
+      final platform = apiCard.platform?.trim().toLowerCase();
+
+      if (platform == null || platform.isEmpty) {
+        continue;
+      }
+
+      final index = socialMediaCardsList.indexWhere(
+            (card) => card.name?.trim().toLowerCase() == platform,
+      );
+
+      if (index != -1) {
+        final currentCard = socialMediaCardsList[index];
+
+        socialMediaCardsList[index] = SocialMediaCardModel(
+          name: currentCard.name,
+          icon: currentCard.icon,
+          title: apiCard.title ?? currentCard.title,
+          url: apiCard.url ?? '',
+          description: apiCard.description ?? '',
+          enabled: true,
+          isFixed: true,
+        );
+      } else {
+        socialMediaCardsList.add(
+          SocialMediaCardModel(
+            name: null,
+            icon: null,
+            title: apiCard.title ?? '',
+            url: apiCard.url ?? '',
+            description: apiCard.description ?? '',
+            enabled: false,
+            isFixed: false,
+          ),
+        );
+      }
+    }
+
+    socialMediaCardsList.refresh();
   }
 
   Future<void> updateServiceURL(BuildContext context) async {
@@ -542,7 +443,6 @@ class CreateServiceController extends getx.GetxController {
         await serviceRepo.updateServiceUrl(
           UpdateServiceUrlBody(
             title: titleController.text,
-            name: nameUrlController.text,
             serviceId: chosenServiceToEdit!.id.toString(),
             url: urlController.text,
           ),
@@ -561,24 +461,18 @@ class CreateServiceController extends getx.GetxController {
     }
   }
 
-  Future<void> updateServiceSingleProduct(BuildContext context) async {
+  Future<void> updateServiceRatingForm(BuildContext context) async {
     Constant.closeKeyBoard();
     if (!loading.value) {
-      if (isSingleProductValidUpdate()) {
+      if (formRatingTitleController.text.isNotEmpty) {
         loading.value = true;
-        await serviceRepo.updateServiceSingleProduct(
-          UpdateServiceSingleProductBody(
-            serviceId: chosenServiceToEdit!.id.toString(),
-            name: singleProduct.title.text,
-            description: singleProduct.description.text,
-            productId: singleProduct.productId.text,
-            currencyId: selectedCurrency.value!.id,
-            multiCurrency: multiCurrency.toString(),
-            price: singleProduct.price.text,
-            productName: singleProduct.title.text,
-            file: singleProduct.image.value.path == ''
-                ? null
-                : singleProduct.image.value,
+        await serviceRepo.updateServiceRatingForm(
+          UpdateServiceRatingFormBody(
+            title: formRatingTitleController.text,
+            description: formRatingDescriptionController.text,
+            allowComments: allowComments.value == true ? 1 : 0,
+            maxStars: maxStars.value,
+            serviceId: chosenServiceToEdit!.id,
           ),
         ).then((value) async {
           if (value.code == 200) {
@@ -595,237 +489,111 @@ class CreateServiceController extends getx.GetxController {
     }
   }
 
-  bool isSingleProductValidUpdate() {
-    return selectedType?.id != null &&
-        (singleProduct.title.text.trim().isNotEmpty) &&
-        selectedCurrency.value!.id != null &&
-        (singleProduct.price.text.trim().isNotEmpty) &&
-        (singleProduct.image.value.path.isNotEmpty ||
-            singleProduct.imageUrl != null);
+  Future<void> updateServiceSocialMedia(BuildContext context) async {
+    Constant.closeKeyBoard();
+    if (loading.value) {
+      return;
+    }
+    if (displayNameController.text.trim().isEmpty ||
+        bioController.text.trim().isEmpty) {
+      TopSnackBar.warning(context, context.localizations.empty_field);
+      return;
+    }
+
+    if (!validateSocialMediaCards(context)) {
+      return;
+    }
+    loading.value = true;
+    await serviceRepo.updateServiceSocialMedia(
+      UpdateServiceSocialMediaBody(
+        serviceId: chosenServiceToEdit!.id.toString(),
+        displayName: displayNameController.text,
+        bio: bioController.text,
+        avatar: avatar.value,
+        background: background.value,
+        socialMediaCards: socialMediaCardsList.toList(),
+      ),
+    ).then((value) async {
+      if (value.code == 200) {
+        await serviceController.getServicesList();
+        getx.Get.back();
+        TopSnackBar.success(context, value.message);
+      } else {
+        TopSnackBar.alert(context, value.message);
+      }
+    });
   }
 
-  Future<File> urlToFile(String imageUrl) async {
-    Dio dio = Dio();
+  void clearFormRatingData() {
+    formRatingTitleController.clear();
+    formRatingDescriptionController.clear();
+    allowComments.value = true;
+    maxStars.value = 5;
+  }
 
-    String extension = imageUrl.split('.').last.split('?').first;
+  void clearSocialMediaData() {
+    displayNameController.clear();
+    bioController.clear();
+    avatar.value = File('');
+    avatarUrl = null;
+    background.value = File('');
+    backgroundUrl = null;
 
-    final tempDir = Directory.systemTemp;
-    final filePath =
-        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.$extension';
-    await dio.download(
-      baseUrl + '/admin/' + imageUrl,
-      filePath,
-      options: Options(
-        responseType: ResponseType.bytes,
-        headers: {'Authorization': 'Bearer ${initController.userData!.token}'},
+    final typeName = selectedType?.name;
+
+    if (typeName == "social_media_cards_4") {
+      initializeSocialMediaCards(4);
+    } else if (typeName == "social_media_cards_8") {
+      initializeSocialMediaCards(9);
+    } else if (typeName == "social_media_cards_unlimited") {
+      initializeSocialMediaCards(11);
+    }
+  }
+
+  clearData() {
+    titleController.clear();
+    urlController.clear();
+    clearFormRatingData();
+    clearSocialMediaData();
+  }
+
+  void initializeSocialMediaCards(int count) {
+    socialMediaCardsList.value = availableSocialMediaCards
+        .take(count).map((card) => SocialMediaCardModel(
+      name: card.name,
+      title: card.title,
+      icon: card.icon,
+      url: '',
+      description: '',
+      enabled: false,
+      isFixed: true,
+    )).toList();
+  }
+
+  void addSocialMediaCard() {
+    socialMediaCardsList.add(
+      SocialMediaCardModel(
+        name: null,
+        title: '',
+        icon: null,
+        url: '',
+        description: '',
+        enabled: false,
+        isFixed: false,
       ),
     );
-    return File(filePath);
   }
 
-  Future fillProductImagesUpdate() async {
-    productsImage.clear();
-    print(products.length);
-    for (var product in products) {
-      if (product.image.value.path.isNotEmpty) {
-        productsImage.add(product.image.value);
-      } else {
-        File file = await urlToFile(product.imageUrl!);
-        productsImage.add(file);
-      }
+  void removeSocialMediaCard(int index) {
+    if (index < 0 || index >= socialMediaCardsList.length) {
+      return;
     }
-  }
+    final card = socialMediaCardsList[index];
 
-  Future<void> updateServiceListOfProducts(BuildContext context) async {
-    Constant.closeKeyBoard();
-    if (!loading.value) {
-      loading.value = true;
-      await fillProductImagesUpdate();
-      await fillLogo();
-      if (isListOfProductsValidUpdate() == '') {
-        print("Number of product images: ${productsImage.length}");
-
-        try {
-          final body = updateModel.UpdateServiceListOfProductsBody(
-            serviceId: chosenServiceToEdit!.id.toString(),
-            name: pageTitleController.text.trim(),
-            pageTitle: pageTitleController.text.trim(),
-            products: products
-                .map((p) => productModelToRequestUpdate(p))
-                .toList(),
-            productImages: productsImage,
-            logo: logo.value.path == '' ? null : logo.value,
-          );
-          FormData formData = await body.toFormData();
-          Dio dio = Dio();
-          final response = await dio.post(
-            baseUrl + UPDATE_SERVICE,
-            data: formData,
-            options: Options(
-              headers: {
-                'Authorization': 'Bearer ${initController.userData!.token}',
-                'Content-Type': 'multipart/form-data',
-              },
-            ),
-          );
-
-          if (response.statusCode == 200) {
-            await serviceController.getServicesList();
-            getx.Get.back();
-            TopSnackBar.success(
-              context,
-              response.data['message'] ?? "Service created successfully",
-            );
-          } else {
-            TopSnackBar.warning(context, "Failed: ${response.data}");
-          }
-        } catch (e) {
-          print("Error creating service: $e");
-          TopSnackBar.warning(context, "Something went wrong");
-        } finally {
-          loading.value = false;
-        }
-      } else {
-        loading.value = false;
-        TopSnackBar.warning(context, context.localizations.empty_field);
-      }
+    if (card.isFixed) {
+      return;
     }
-  }
-
-  String isListOfProductsValidUpdate() {
-    if (pageTitleController.text.toString().trim().isEmpty) return 'title';
-    if (logo.value.path.isEmpty && logoUrl == null) return 'logo';
-    if (products.isEmpty) return 'products';
-    for (var product in products) {
-      if (product.title.toString().trim().isEmpty) return 'title products';
-      if (product.price.toString().trim().isEmpty) return 'price';
-      if (product.image.value.path == "" && product.imageUrl == null)
-        return 'image';
-    }
-    return '';
-  }
-
-  Future fillLogo() async {
-    File file = await urlToFile(logoUrl!);
-    logo.value = file;
-  }
-
-  updateModel.ProductRequestModel productModelToRequestUpdate(
-      ProductModel product,
-      ) {
-    return updateModel.ProductRequestModel(
-      title: product.title.text.trim(),
-      description: product.description.text.trim(),
-      price: product.price.text.trim(),
-    );
-  }
-
-  Future<void> updateServiceRestaurant(BuildContext context) async {
-    Constant.closeKeyBoard();
-    if (!loading.value) {
-      loading.value = true;
-      await fillProductImagesUpdate();
-      await fillImages();
-      if (isRestaurantValuesValidUpdate()) {
-        print("Number of product images: ${productsImage.length}");
-        try {
-          final body = updateModelRestaurant.UpdateServiceRestaurantBody(
-            serviceId: chosenServiceToEdit!.id.toString(),
-            pageTitle: pageTitleController.text.trim(),
-            description: descriptionController.text.trim(),
-            headerLogo: headerLogo.value,
-            showLogo: logoVisible,
-            theme: mapTheme(theme),
-            bannerImage: bannerImage.value,
-            bannerShow: bannerVisible,
-            bannerAlt: bannerTextController.text.trim(),
-            products: products
-                .map((p) => productModelRestaurantToRequestUpdate(p))
-                .toList(),
-            productImages: productsImage,
-          );
-          FormData formData = await body.toFormData();
-          Dio dio = Dio();
-          final response = await dio.post(
-            baseUrl + UPDATE_SERVICE,
-            data: formData,
-            options: Options(
-              headers: {
-                'Authorization': 'Bearer ${initController.userData!.token}',
-                'Content-Type': 'multipart/form-data',
-              },
-            ),
-          );
-
-          if (response.statusCode == 200) {
-            await serviceController.getServicesList();
-            getx.Get.back();
-            TopSnackBar.success(
-              context,
-              response.data['message'] ?? "Service created successfully",
-            );
-            TopSnackBar.success(
-              context,
-              response.data['message'] ?? "Service created successfully",
-            );
-          } else {
-            TopSnackBar.warning(context, "Failed: ${response.data}");
-          }
-        } catch (e) {
-          print("Error creating service: $e");
-          TopSnackBar.warning(context, "Something went wrong");
-        } finally {
-          loading.value = false;
-        }
-      } else {
-        loading.value = false;
-        TopSnackBar.warning(context, context.localizations.empty_field);
-      }
-    }
-  }
-
-  Future fillImages() async {
-    File file1 = await urlToFile(headerLogoUrl!);
-    headerLogo.value = file1;
-
-    File file2 = await urlToFile(bannerImageUrl!);
-    bannerImage.value = file2;
-  }
-
-  bool isRestaurantValuesValidUpdate() {
-    if (pageTitleController.text.toString().trim().isEmpty) return false;
-    if (headerLogo.value.path == '' && headerLogoUrl == null) return false;
-    if (bannerImage.value.path == '' && bannerImageUrl == null) return false;
-    for (var product in products) {
-      if (product.title.toString().trim().isEmpty) return false;
-      if (product.price.toString().trim().isEmpty) return false;
-      if (product.image.value.path == "" && product.imageUrl == null)
-        return false;
-    }
-
-    return true;
-  }
-
-  updateModelRestaurant.ProductResRequestModel productModelRestaurantToRequestUpdate(ProductModel product) {
-    return updateModelRestaurant.ProductResRequestModel(
-      title: product.title.text.trim(),
-      description: product.description.text.trim(),
-      price: product.price.text.trim(),
-    );
-  }
-
-  updateModelRestaurant.ThemeColorModel? mapTheme(ThemeColorModel? theme) {
-    if (theme == null) return null;
-
-    return updateModelRestaurant.ThemeColorModel(
-      colors: updateModelRestaurant.ThemeColors(
-        bg: theme.colors.bg,
-        panel: theme.colors.panel,
-        text: theme.colors.text,
-        muted: theme.colors.muted,
-        accent: theme.colors.accent,
-      ),
-    );
+    socialMediaCardsList.removeAt(index);
   }
 
 }

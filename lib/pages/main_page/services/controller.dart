@@ -25,9 +25,10 @@ class ServiceController extends GetxController implements GetxService {
 
   final allowedTypes = [
     "url",
-    "restaurant_menu",
-    "product",
-    "list_of_products",
+    "social_media_cards_4",
+    "social_media_cards_8",
+    "social_media_cards_unlimited",
+    "rating_form"
   ];
 
   void handleServices(List servicesJson) {
@@ -35,7 +36,7 @@ class ServiceController extends GetxController implements GetxService {
     allServices.assignAll(services);
   }
 
-  List<ServiceResponse> getFilteredServices() {
+  List<ServiceResponse> get filteredServices {
     return allServices
         .where((service) => service.serviceType.id == selectedTabId.value)
         .toList();

@@ -2,7 +2,6 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/data/constant/api_constant.dart';
 import 'package:reviews_link_v2/pages/profile/controller.dart';
 import 'package:reviews_link_v2/pages/profile/widget/pick_image_sheet.dart';
@@ -25,7 +24,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isTablet = Constant.isTablet(context);
     return Obx(() {
       return Scaffold(
         backgroundColor: white,

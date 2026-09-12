@@ -29,17 +29,8 @@ class ImagePickerWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text.rich(
+        Text(label,
           style: AppTheme.labelLarge.copyWith(fontSize: 15.sp, fontWeight: FontWeight.w500),
-          TextSpan(
-            text: label,
-            children: [
-              TextSpan(
-                text: ' *',
-                style: AppTheme.labelLarge.copyWith(color: red, fontSize: 15.sp, fontWeight: FontWeight.w500),
-              ),
-            ],
-          ),
         ),
         SizedBox(height: 6.h),
         InkWell(

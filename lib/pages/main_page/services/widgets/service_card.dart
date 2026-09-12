@@ -9,6 +9,7 @@ import 'package:reviews_link_v2/res/color.dart';
 import 'package:reviews_link_v2/widgets/button/custom_button.dart';
 import 'package:reviews_link_v2/widgets/pop_up/custom_popup_menu_button.dart';
 import 'package:reviews_link_v2/widgets/dialog/custom_dialog.dart';
+import 'package:reviews_link_v2/widgets/rating_bar/custom_rating_bar.dart';
 
 class ServiceCard extends StatelessWidget {
 
@@ -23,26 +24,55 @@ class ServiceCard extends StatelessWidget {
     final isTablet = Constant.isTablet(context);
     return InkWell(
       onTap: () async {
-        if (service.serviceType.name == "restaurant_menu") {
-          Get.toNamed(
-            '/servicesRestaurantMenu',
-            arguments: service.jsonData as RestaurantMenuData,
-          );
-        }
-        if (service.serviceType.name == "list_of_products") {
-          Get.toNamed(
-            '/servicesListProducts',
-            arguments: service.jsonData as ListOfProductsData,
-          );
-        }
-        if (service.serviceType.name == "product") {
-          Get.toNamed(
-            '/servicesSingleProduct',
-            arguments: service.jsonData as SingleProductData,
-          );
-        }
         if (service.serviceType.name == 'url') {
           Constant.launchUrls(Uri.parse((service.jsonData as UrlServiceData).url));
+        }
+        if (service.serviceType.name == "rating_form") {
+          Dialogs.show(
+            context,
+            content: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      InkWell(
+                        onTap: () => Get.back(),
+                        child: Icon(Icons.close,size: isTablet ? 20.sp : null),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10.h),
+                  Text((service.jsonData as RatingFormServiceData).formTitle,
+                    style: AppTheme.headlineMedium,
+                  ),
+                  SizedBox(height: 8),
+                  Text((service.jsonData as RatingFormServiceData).formDescription,
+                    style: AppTheme.bodyLarge.copyWith(color: grey),
+                  ),
+                  SizedBox(height: 15.h),
+                  CustomRatingBar(
+                    rate: (service.jsonData as RatingFormServiceData).maxStars.toDouble(),
+                    size: isTablet ? 30.sp : 35.sp,
+                    itemPadding: 0,
+                    onChanged: null
+                  ),
+                  SizedBox(height: 20.h),
+                ],
+              ),
+            ),
+          );
+        }
+        if (service.serviceType.name == "social_media_cards_4" ||
+        service.serviceType.name == "social_media_cards_8" ||
+        service.serviceType.name == "social_media_cards_unlimited") {
+          Get.toNamed(
+            '/socialMediaServices',
+            arguments: service.jsonData as SocialMediaServiceData,
+          );
         }
       },
       child: Card(
@@ -61,17 +91,17 @@ class ServiceCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        service.serviceType.name == "restaurant_menu"
-                            ? (service.jsonData as RestaurantMenuData).pageTitle
-                            : service.serviceType.name == "list_of_products"
-                            ? (service.jsonData as ListOfProductsData).pageTitle
-                            : service.serviceType.name == "product"
-                            ? (service.jsonData as SingleProductData)
-                                  .supermarket
-                                  .first
-                                  .name
+                        service.serviceType.name == "rating_form"
+                            ? (service.jsonData as RatingFormServiceData).formTitle
                             : service.serviceType.name == "url"
                             ? (service.jsonData as UrlServiceData).url
+                            : service.serviceType.name == "social_media_cards_4" ||
+                            service.serviceType.name == "social_media_cards_8" ||
+                            service.serviceType.name == "social_media_cards_unlimited" ?
+                            (service.jsonData as SocialMediaServiceData).profile!.displayName == "" &&
+                                (service.jsonData as SocialMediaServiceData).cards!.isNotEmpty ?
+                            (service.jsonData as SocialMediaServiceData).cards!.first.platform! :
+                            (service.jsonData as SocialMediaServiceData).profile!.displayName!
                             : "",
                         style: AppTheme.bodyLarge.copyWith(fontSize: 20.sp,color: white),
                         maxLines: 2,
@@ -185,6 +215,21 @@ class ServiceCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (service.serviceType.name == "rating_form")...[
+                    PopupMenuItem(
+                      height: isTablet ? 80 : kMinInteractiveDimension,
+                      value: "",
+                      onTap: () {
+                        Get.toNamed('/reviews', arguments: service);
+                      },
+                      child: Center(
+                        child: Text(
+                          "Reviews",
+                          style: AppTheme.labelLarge.copyWith(fontSize: 18.sp),
+                        ),
+                      ),
+                    ),
+                  ],
                   PopupMenuItem(
                     height: isTablet ? 80 : kMinInteractiveDimension,
                     value: "",

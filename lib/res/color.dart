@@ -10,3 +10,4 @@ Color red = const Color(0xffef5350);
 Color green = const Color(0xff25b372);
 Color lightBlue = const Color(0xff00bcd4);
 Color darkBlue = const Color(0xff466aa6);
+Color yellow = const Color(0xffffc107);

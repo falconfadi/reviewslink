@@ -20,6 +20,7 @@ class CustomTextField extends StatelessWidget {
   final int? maxLines;
   final int? minLines;
   final bool? required;
+  final ValueChanged<String>? onChanged;
 
   const CustomTextField({
     this.controller,
@@ -37,6 +38,7 @@ class CustomTextField extends StatelessWidget {
     this.maxLines,
     this.minLines,
     this.required = false,
+    this.onChanged,
     Key? key,
   }) : super(key: key);
 
@@ -67,6 +69,7 @@ class CustomTextField extends StatelessWidget {
             textAlignVertical: TextAlignVertical.center,
             cursorHeight: isTablet ? 35 : 18,
             obscureText: obscureText ?? false,
+            onChanged: onChanged,
             maxLength: maxLength ?? 500,
             minLines: minLines ?? 1,
             maxLines: maxLines ?? 1,

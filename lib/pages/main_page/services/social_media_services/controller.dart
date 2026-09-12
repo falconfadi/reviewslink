@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:reviews_link_v2/data/models/response/service/service_response.dart';
 
-class ServicesListProductsController extends GetxController {
+class SocialMediaServicesController extends GetxController {
 
-  late final ListOfProductsData data;
+  late final SocialMediaServiceData data;
 
   @override
   void onInit() {

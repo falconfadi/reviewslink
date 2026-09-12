@@ -62,7 +62,7 @@ class _ServicesPageState extends State<ServicesPage> {
                           style: AppTheme.labelLarge
                       ),
                     )
-                  : serviceController.getFilteredServices().isEmpty
+                  : serviceController.filteredServices.isEmpty
                   ? Center(
                       child: Text(
                         "No services available in this category",
@@ -72,8 +72,7 @@ class _ServicesPageState extends State<ServicesPage> {
                   : ListView(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       children: [
-                        ...serviceController
-                            .getFilteredServices()
+                        ...serviceController.filteredServices
                             .map((service) => ServiceCard(service: service))
                             .toList(),
                         SizedBox(height: 30.h),

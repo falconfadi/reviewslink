@@ -4,15 +4,14 @@ import 'package:get/get.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
 import 'package:reviews_link_v2/pages/main_page/services/create_service/controller.dart';
-import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/list_of_products_widget.dart';
-import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/restaurant_menu_widget.dart';
-import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/single_product_widget.dart';
+import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/rating_form_service.dart';
+import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/social_media_service.dart';
+import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/url_service.dart';
 import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
 import 'package:reviews_link_v2/widgets/button/custom_button.dart';
 import 'package:reviews_link_v2/widgets/dropdown/custom_drop_down.dart';
 import 'package:reviews_link_v2/widgets/header/internal_header.dart';
-import 'package:reviews_link_v2/widgets/text_field/custom_text_field.dart';
 
 class CreateServicePage extends StatefulWidget {
 
@@ -26,6 +25,15 @@ class _CreateServicePageState extends State<CreateServicePage> {
 
   final CreateServiceController createServiceController = Get.find();
   InitController initController = Get.find();
+
+
+  @override
+  void initState() {
+    super.initState();
+    if(createServiceController.editStatus == false) {
+      createServiceController.selectedType = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +66,16 @@ class _CreateServicePageState extends State<CreateServicePage> {
                       : (ServiceType? value) {
                           setState(() {
                             createServiceController.clearData();
-                            createServiceController.clearSingleProduct();
                             createServiceController.selectedType = value;
+
+                            final typeName = value?.name;
+                            if (typeName == "social_media_cards_4") {
+                              createServiceController.initializeSocialMediaCards(4);
+                            } else if (typeName == "social_media_cards_8") {
+                              createServiceController.initializeSocialMediaCards(9);
+                            } else if (typeName == "social_media_cards_unlimited") {
+                              createServiceController.initializeSocialMediaCards(11);
+                            }
                           });
                         },
                   items: initController.servicesTypeList.map((type) {
@@ -79,41 +95,8 @@ class _CreateServicePageState extends State<CreateServicePage> {
                     );
                   }).toList(),
                 ),
-                createServiceController.selectedType == null
-                    ? SizedBox()
-                    : createServiceController.selectedType!.name == "list_of_products"
-                    ? ListOfProductsWidget(createServiceController: createServiceController)
-                    : (createServiceController.selectedType!.name == 'product')
-                    ? SingleProductWidget(createServiceController: createServiceController, initController: initController)
-                    : (createServiceController.selectedType!.name == "restaurant_menu")
-                    ? RestaurantMenuWidget(createServiceController: createServiceController)
-                    : (createServiceController.selectedType!.name == "url")
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: 25.h),
-                          CustomTextField(
-                            controller: createServiceController.titleController,
-                            title: "Title (optional)",
-                            labelText: "e.g. My website url",
-                            textInputType: TextInputType.text,
-                          ),
-                          SizedBox(height: 25.h),
-                          CustomTextField(
-                            controller: createServiceController.urlController,
-                            title: "URL",
-                            required: true,
-                            labelText: "https://google.com",
-                            textInputType: TextInputType.text,
-                          ),
-                        ],
-                      )
-                    : Container(
-                        height: 1.sh * 0.2,
-                        child: Center(child: Text('Coming soon',
-                            style: AppTheme.labelLarge
-                        )),
-                      ),
+                SizedBox(height: 25.h),
+                _buildServiceWidget(),
                 SizedBox(height: 50.h),
                 createServiceController.allowedTypes.contains(
                       createServiceController.selectedType?.name) ?
@@ -145,5 +128,47 @@ class _CreateServicePageState extends State<CreateServicePage> {
         ),
       );
     });
+  }
+
+  Widget _buildServiceWidget() {
+    final type = createServiceController.selectedType;
+
+    if (type == null) {
+      return const SizedBox();
+    }
+
+    switch (type.name) {
+      case "url":
+        return UrlService(controller: createServiceController);
+
+      case "rating_form":
+        return RatingFormService(controller: createServiceController);
+
+      case "social_media_cards_4":
+        return SocialMediaService(
+          initialCards: 4,
+          canAddMore: false,
+        );
+
+      case "social_media_cards_8":
+        return SocialMediaService(
+          initialCards: 9,
+          canAddMore: false,
+        );
+
+      case "social_media_cards_unlimited":
+        return SocialMediaService(
+          initialCards: 11,
+          canAddMore: true,
+        );
+
+      default:
+        return Container(
+          height: 1.sh * 0.2,
+          child: Center(child: Text('Coming soon',
+              style: AppTheme.labelLarge
+          )),
+        );
+    }
   }
 }

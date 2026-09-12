@@ -17,9 +17,10 @@ const String RESEND_CODE = "/api/resend_otp";
 /// ---------------- SERVICE ---------------- ///
 
 const String GET_MY_SERVICES = "/api/myservices";
-const String CREATE_SERVICES = "/api/create_service";
+const String CREATE_SERVICE = "/api/create_service";
 const String DELETE_SERVICE = "/api/delete_service";
 const String UPDATE_SERVICE = "/api/update_service";
+const String DELETE_SERVICE_REVIEW = "/api/delete_service_review";
 
 /// ---------------- Init ---------------- ///
 

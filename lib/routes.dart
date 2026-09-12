@@ -3,6 +3,10 @@ import 'package:reviews_link_v2/pages/change_password/binding.dart';
 import 'package:reviews_link_v2/pages/change_password/index.dart';
 import 'package:reviews_link_v2/pages/auth/create_account/binding.dart';
 import 'package:reviews_link_v2/pages/auth/create_account/index.dart';
+import 'package:reviews_link_v2/pages/main_page/services/reviews/binding.dart';
+import 'package:reviews_link_v2/pages/main_page/services/reviews/index.dart';
+import 'package:reviews_link_v2/pages/main_page/services/social_media_services/binding.dart';
+import 'package:reviews_link_v2/pages/main_page/services/social_media_services/index.dart';
 import 'package:reviews_link_v2/pages/qr_requests/binding.dart';
 import 'package:reviews_link_v2/pages/qr_requests/create_qr_request/binding.dart';
 import 'package:reviews_link_v2/pages/qr_requests/create_qr_request/index.dart';
@@ -19,12 +23,6 @@ import 'package:reviews_link_v2/pages/main_page/binding.dart';
 import 'package:reviews_link_v2/pages/main_page/index.dart';
 import 'package:reviews_link_v2/pages/profile/binding.dart';
 import 'package:reviews_link_v2/pages/profile/index.dart';
-import 'package:reviews_link_v2/pages/main_page/services/services_list_products/binding.dart';
-import 'package:reviews_link_v2/pages/main_page/services/services_list_products/index.dart';
-import 'package:reviews_link_v2/pages/main_page/services/services_restaurant_menu/binding.dart';
-import 'package:reviews_link_v2/pages/main_page/services/services_restaurant_menu/index.dart';
-import 'package:reviews_link_v2/pages/main_page/services/services_single_product/binding.dart';
-import 'package:reviews_link_v2/pages/main_page/services/services_single_product/index.dart';
 import 'package:reviews_link_v2/pages/splash/binding.dart';
 import 'package:reviews_link_v2/pages/splash/index.dart';
 import 'package:reviews_link_v2/pages/support_tickets/support_ticket_details/binding.dart';
@@ -77,21 +75,6 @@ abstract class AppRouting {
       binding: ProfileBinding(),
     ),
     GetPage(
-      name: Pages.servicesListProducts.value,
-      page: () => ServicesListProductsPage(),
-      binding: ServicesListProductsBinding(),
-    ),
-    GetPage(
-      name: Pages.servicesSingleProduct.value,
-      page: () => ServicesSingleProductPage(),
-      binding: ServicesSingleProductBinding(),
-    ),
-    GetPage(
-      name: Pages.servicesRestaurantMenu.value,
-      page: () => ServicesRestaurantMenuPage(),
-      binding: ServicesRestaurantMenuBinding(),
-    ),
-    GetPage(
       name: Pages.createQrRequest.value,
       page: () => CreateQRRequestPage(),
       binding: CreateQRRequestBinding(),
@@ -100,6 +83,11 @@ abstract class AppRouting {
       name: Pages.createService.value,
       page: () => CreateServicePage(),
       binding: CreateServiceBinding(),
+    ),
+    GetPage(
+      name: Pages.socialMediaServices.value,
+      page: () => SocialMediaServicesPage(),
+      binding: SocialMediaServicesBinding(),
     ),
     GetPage(
       name: Pages.myQrRequests.value,
@@ -122,9 +110,9 @@ abstract class AppRouting {
       binding: SupportTicketDetailsBinding(),
     ),
     GetPage(
-      name: Pages.servicesListProducts.value,
-      page: () => ServicesListProductsPage(),
-      binding: ServicesListProductsBinding(),
+      name: Pages.reviews.value,
+      page: () => ReviewsPage(),
+      binding: ReviewsBinding(),
     ),
   ];
 }
@@ -143,10 +131,12 @@ enum Pages {
   servicesRestaurantMenu,
   createQrRequest,
   createService,
+  socialMediaServices,
   myQrRequests,
   createSupportTickets,
   showSupportTickets,
   showSupportTicketDetails,
+  reviews
 }
 
 extension PagesExtension on Pages {
@@ -178,6 +168,8 @@ extension PagesExtension on Pages {
         return '/createQrRequest';
       case Pages.createService:
         return '/createService';
+      case Pages.socialMediaServices:
+        return '/socialMediaServices';
       case Pages.myQrRequests:
         return '/myQrRequests';
       case Pages.createSupportTickets:
@@ -186,6 +178,8 @@ extension PagesExtension on Pages {
         return '/showSupportTickets';
       case Pages.showSupportTicketDetails:
         return '/showSupportTicketDetails';
+      case Pages.reviews:
+        return '/reviews';
     }
   }
 }
@@ -219,6 +213,8 @@ abstract class Navigation {
         return Pages.createQrRequest;
       case '/createService':
         return Pages.createService;
+      case '/socialMediaServices':
+        return Pages.socialMediaServices;
       case '/myQrRequests':
         return Pages.myQrRequests;
       case '/createSupportTickets':
@@ -227,6 +223,8 @@ abstract class Navigation {
         return Pages.showSupportTickets;
       case '/showSupportTicketDetails':
         return Pages.showSupportTicketDetails;
+      case '/reviews':
+        return Pages.reviews;
       default:
         return null;
     }
