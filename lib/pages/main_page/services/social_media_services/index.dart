@@ -5,8 +5,10 @@ import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/constant/api_constant.dart';
 import 'package:reviews_link_v2/pages/main_page/services/social_media_services/controller.dart';
+import 'package:reviews_link_v2/res/app_images.dart';
 import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
+import 'package:reviews_link_v2/widgets/custom_picture/custom_png_image.dart';
 import 'package:reviews_link_v2/widgets/custom_picture/custom_png_network.dart';
 import 'package:reviews_link_v2/widgets/header/internal_header.dart';
 
@@ -31,13 +33,18 @@ class SocialMediaServicesPage extends StatelessWidget {
               Stack(
                 alignment: Alignment.center,
                 children: [
+                  socialMediaServicesController.data
+                      .profile!.background != "" ?
                   CustomPngNetwork(
                     width: double.infinity,
                     height: 0.3.sh,
-                    image: socialMediaServicesController.data
-                        .profile!.background != "" ?
-                    '$baseUrl/admin/${socialMediaServicesController
-                        .data.profile!.background}' : null,
+                    image: '$baseUrl/admin/${socialMediaServicesController
+                        .data.profile!.background}',
+                  ) : CustomPngImage(
+                    width: double.infinity,
+                    height: 0.3.sh,
+                    image: BACKGROUND,
+                    fit: BoxFit.cover,
                   ),
                   Positioned(
                     right: 0,
@@ -51,12 +58,11 @@ class SocialMediaServicesPage extends StatelessWidget {
                             border: Border.all(color: grey),
                             image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: NetworkImage(
-                                  socialMediaServicesController.data
-                                      .profile!.avatar != "" ?
+                                image: socialMediaServicesController.data
+                                    .profile!.avatar != "" ? NetworkImage(
                                   '$baseUrl/admin/${socialMediaServicesController
-                                      .data.profile!.avatar}' : "",
-                                ))
+                                      .data.profile!.avatar}',
+                                ) : AssetImage(AVATAR))
                         ),
                       ),
                     ),

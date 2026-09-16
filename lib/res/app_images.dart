@@ -2,6 +2,8 @@
 /// -------- LOGO -------- ///
 
 const String FULL_LOGO = "assets/images/logo.png";
+const String BACKGROUND = "assets/images/background.jpg";
+const String AVATAR = "assets/images/avatar.jpg";
 
 /// -------- SOCIAL MEDIA -------- ///
 

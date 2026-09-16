@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
 import 'package:reviews_link_v2/pages/main_page/services/create_service/controller.dart';
@@ -86,7 +87,7 @@ class _CreateServicePageState extends State<CreateServicePage> {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              createServiceController.formatText(type.name ?? ""),
+                              Constant.formatText(type.name ?? ""),
                               style: AppTheme.bodyLarge,
                             ),
                           ),

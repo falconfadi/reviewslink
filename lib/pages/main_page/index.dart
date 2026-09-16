@@ -48,7 +48,7 @@ class MainPage extends StatelessWidget {
               mainPageController.pageIndex.value == 0
                   ? 'My QRs'
                   : mainPageController.pageIndex.value == 2
-                  ? 'My services'
+                  ? 'My Services'
                   : mainPageController.pageIndex.value == 1 &&
                         mainPageController.scanPopUpStatus.value
                   ? 'Claim QR'

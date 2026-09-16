@@ -63,14 +63,14 @@ class DrawerWidget extends StatelessWidget {
                           SizedBox(height: 15.h),
                           Text(
                             initController.userData!.userName ?? "",
-                            style: AppTheme.labelLarge,
+                            style: AppTheme.bodyLarge,
                           ),
-                          Text(
-                            initController.userData!.userEmail ?? "",
+                           SizedBox(height: 5.h),
+                          Text("User",
                             textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            style: AppTheme.labelLarge,
+                            style: AppTheme.labelLarge.copyWith(
+                              color: grey
+                            ),
                           ),
                         ],
                       ),
@@ -126,6 +126,9 @@ class DrawerWidget extends StatelessWidget {
                   text: TextSpan(
                     style: AppTheme.labelMedium,
                     children: [
+                      TextSpan(text: "2026 © ",
+                          style: AppTheme.labelMedium.copyWith(color: grey)
+                      ),
                       TextSpan(
                         text: "ReviewsLink",
                         style: AppTheme.labelMedium.copyWith(
@@ -137,25 +140,18 @@ class DrawerWidget extends StatelessWidget {
                             Constant.launchUrls(Uri.parse("https://Reviewslink.com/admin"));
                           },
                       ),
-                      TextSpan(text: " Powered by",
+                      TextSpan(text: " by",
                         style: AppTheme.labelMedium.copyWith(color: grey)
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 10.h),
-                InkWell(
-                  onTap: () {
-                    Constant.launchUrls(Uri.parse("https://your1site.com/"));
-                  },
-                  child: Text(
-                    "Your(1)Site",
-                    style: AppTheme.bodyLarge.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: primaryColor,
-                      decoration: TextDecoration.underline,
-                      decorationColor: primaryColor,
-                    ),
+                Text(
+                  "TRUST IT SKILLS - FZCO",
+                  style: AppTheme.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: grey,
                   ),
                 ),
                 SizedBox(height: 20.h),

@@ -6,11 +6,13 @@ class CustomPngImage extends StatelessWidget {
   final double width;
   final double height;
   final String image;
+  final BoxFit? fit;
 
   const CustomPngImage({
     required this.width,
     required this.height,
     required this.image,
+    this.fit,
     Key? key,
   }) : super(key: key);
 
@@ -19,7 +21,7 @@ class CustomPngImage extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: Image.asset(image, fit: BoxFit.contain),
+      child: Image.asset(image, fit: fit ?? BoxFit.contain),
     );
   }
 }

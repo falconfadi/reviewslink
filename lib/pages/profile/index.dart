@@ -35,7 +35,7 @@ class ProfilePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 25.h),
-                Text("Edit Profile Information",
+                Text("Profile",
                     style: AppTheme.displayLarge.copyWith(fontSize: 22.sp)
                 ),
                 SizedBox(height: 25.h),

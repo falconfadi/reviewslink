@@ -22,6 +22,13 @@ class Constant {
     return emailRegex.hasMatch(email);
   }
 
+  static String formatText(String text) {
+    return text.replaceAll('_', ' ').split(' ').map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
+
   static PinTheme defaultPinTheme = PinTheme(
     width: 50.w,
     height: 80.h,

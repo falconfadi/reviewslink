@@ -175,13 +175,6 @@ class CreateServiceController extends getx.GetxController {
     }
   }
 
-  String formatText(String text) {
-    return text.replaceAll('_', ' ').split(' ').map((word) {
-      if (word.isEmpty) return '';
-      return word[0].toUpperCase() + word.substring(1).toLowerCase();
-    }).join(' ');
-  }
-
   Future<File?> selectImage() async {
     final imagePicker = ImagePicker();
     final pickedFile = await imagePicker.pickImage(
@@ -259,12 +252,21 @@ class CreateServiceController extends getx.GetxController {
   }
 
   bool validateSocialMediaCards(BuildContext context) {
+
+    final enabledCards = socialMediaCardsList.where((card) => card.enabled == true);
+
+    if (selectedType?.name == "social_media_cards_8") {
+      if (enabledCards.length > 8) {
+        TopSnackBar.warning(context, "You can enable up to 8 social media cards only");
+        return false;
+      }
+    }
+
     final isUnlimited = selectedType?.name == "social_media_cards_unlimited";
 
     if (isUnlimited) {
       final fixedCards = socialMediaCardsList.where((card) => card.isFixed);
       final customCards = socialMediaCardsList.where((card) => !card.isFixed);
-
       final enabledFixedCards = fixedCards.where((card) => card.enabled == true);
 
       for (final card in enabledFixedCards) {
@@ -293,9 +295,6 @@ class CreateServiceController extends getx.GetxController {
       }
       return true;
     }
-
-    final enabledCards =
-    socialMediaCardsList.where((card) => card.enabled == true);
 
     if (enabledCards.isEmpty) {
       TopSnackBar.warning(context, "Enable at least one social media card");

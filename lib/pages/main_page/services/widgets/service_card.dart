@@ -49,10 +49,12 @@ class ServiceCard extends StatelessWidget {
                   Text((service.jsonData as RatingFormServiceData).formTitle,
                     style: AppTheme.headlineMedium,
                   ),
-                  SizedBox(height: 8),
-                  Text((service.jsonData as RatingFormServiceData).formDescription,
-                    style: AppTheme.bodyLarge.copyWith(color: grey),
-                  ),
+                  if((service.jsonData as RatingFormServiceData).formDescription != "") ...[
+                    SizedBox(height: 10),
+                    Text((service.jsonData as RatingFormServiceData).formDescription,
+                      style: AppTheme.bodyLarge.copyWith(color: grey),
+                    ),
+                  ],
                   SizedBox(height: 15.h),
                   CustomRatingBar(
                     rate: (service.jsonData as RatingFormServiceData).maxStars.toDouble(),
@@ -93,8 +95,9 @@ class ServiceCard extends StatelessWidget {
                       Text(
                         service.serviceType.name == "rating_form"
                             ? (service.jsonData as RatingFormServiceData).formTitle
-                            : service.serviceType.name == "url"
-                            ? (service.jsonData as UrlServiceData).url
+                            :  service.serviceType.name == "url"
+                            ? ((service.jsonData as UrlServiceData).title.isEmpty
+                            ? "-" : (service.jsonData as UrlServiceData).title)
                             : service.serviceType.name == "social_media_cards_4" ||
                             service.serviceType.name == "social_media_cards_8" ||
                             service.serviceType.name == "social_media_cards_unlimited" ?
@@ -109,7 +112,7 @@ class ServiceCard extends StatelessWidget {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        service.serviceType.name,
+                        Constant.formatText(service.serviceType.name),
                         style: AppTheme.labelLarge.copyWith(fontSize: 18.sp,color: white),
                       ),
                     ],
