@@ -112,7 +112,7 @@ class ServiceCard extends StatelessWidget {
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        Constant.formatText(service.serviceType.name),
+                        Constant.serviceTypeName(service.serviceType.name),
                         style: AppTheme.labelLarge.copyWith(fontSize: 18.sp,color: white),
                       ),
                     ],

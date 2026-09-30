@@ -29,6 +29,18 @@ class Constant {
     }).join(' ');
   }
 
+  static const Map<String, String> _serviceTypeNames = {
+    'url': 'URL',
+    'social_media_cards_4': 'Social Media 4 Cards',
+    'social_media_cards_8': 'Social Media 8 Cards',
+    'social_media_cards_unlimited': 'Social Media Unlimited Cards',
+    'rating_form': 'Rating Form',
+  };
+
+  static String serviceTypeName(String key) {
+    return _serviceTypeNames[key] ?? formatText(key);
+  }
+
   static PinTheme defaultPinTheme = PinTheme(
     width: 50.w,
     height: 80.h,

@@ -73,7 +73,7 @@ class _CreateServicePageState extends State<CreateServicePage> {
                             if (typeName == "social_media_cards_4") {
                               createServiceController.initializeSocialMediaCards(4);
                             } else if (typeName == "social_media_cards_8") {
-                              createServiceController.initializeSocialMediaCards(9);
+                              createServiceController.initializeSocialMediaCards(8);
                             } else if (typeName == "social_media_cards_unlimited") {
                               createServiceController.initializeSocialMediaCards(11);
                             }
@@ -87,7 +87,7 @@ class _CreateServicePageState extends State<CreateServicePage> {
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
-                              Constant.formatText(type.name ?? ""),
+                              Constant.serviceTypeName(type.name ?? ""),
                               style: AppTheme.bodyLarge,
                             ),
                           ),
@@ -153,7 +153,7 @@ class _CreateServicePageState extends State<CreateServicePage> {
 
       case "social_media_cards_8":
         return SocialMediaService(
-          initialCards: 9,
+          initialCards: 8,
           canAddMore: false,
         );
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
@@ -53,10 +54,7 @@ class _TabsWidgetState extends State<TabsWidget> {
                     child: Row(
                       children: [
                         Text(
-                          tab.name
-                              .toString()
-                              .replaceAll('_', ' ')
-                              .capitalize1(),
+                          Constant.serviceTypeName(tab.name ?? ""),
                           style: AppTheme.labelLarge,
                         ),
                       ],
@@ -69,12 +67,5 @@ class _TabsWidgetState extends State<TabsWidget> {
         ),
       ],
     );
-  }
-}
-
-extension StringExtension on String {
-  String capitalize1() {
-    if (this.isEmpty) return this;
-    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }

@@ -6,6 +6,7 @@ import 'package:reviews_link_v2/pages/main_page/services/create_service/controll
 import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/image_picker_widget.dart';
 import 'package:reviews_link_v2/res/app_theme.dart';
 import 'package:reviews_link_v2/res/color.dart';
+import 'package:reviews_link_v2/widgets/check_box_list_tile/custom_check_box_list_tile.dart';
 import 'package:reviews_link_v2/widgets/text_field/custom_text_field.dart';
 
 class SocialMediaProfileWidget extends StatelessWidget {
@@ -76,6 +77,21 @@ class SocialMediaProfileWidget extends StatelessWidget {
                     controller.background.value = pickedImage;
                   }
                 },
+              ),
+              SizedBox(height: 15.h),
+              CustomCheckBoxListTile(
+                value: controller.verified.value,
+                onChanged: (v) {
+                  controller.verified.value = v!;
+                },
+                title: "Verified",
+              ),
+              CustomCheckBoxListTile(
+                value: controller.showQuickIcons.value,
+                onChanged: (v) {
+                  controller.showQuickIcons.value = v!;
+                },
+                title: "Show quick icons",
               ),
               SizedBox(height: 10),
             ],

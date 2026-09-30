@@ -151,12 +151,10 @@ class LogInPage extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: 15.h),
-                  CustomFooterWidget(
-                    text: "2026 © ReviewsLink MCMS by",
-                    link: "Your(1)Site",
-                    linkTap: () {
-                      Constant.launchUrls(Uri.parse("https://your1site.com/"));
-                    },
+                  Text(
+                    "2026 © ReviewsLink MCMS by TRUST IT SKILLS - FZCO",
+                    textAlign: TextAlign.center,
+                    style: AppTheme.labelMedium.copyWith(color: grey),
                   ),
                   SizedBox(height: 15.h),
                   CustomFooterWidget(

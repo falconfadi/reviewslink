@@ -140,7 +140,7 @@ class DrawerWidget extends StatelessWidget {
                             Constant.launchUrls(Uri.parse("https://Reviewslink.com/admin"));
                           },
                       ),
-                      TextSpan(text: " by",
+                      TextSpan(text: " MCMS by",
                         style: AppTheme.labelMedium.copyWith(color: grey)
                       ),
                     ],

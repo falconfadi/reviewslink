@@ -43,6 +43,8 @@ class CreateServiceController extends getx.GetxController {
   String? avatarUrl;
   getx.Rx<File> background = File('').obs;
   String? backgroundUrl;
+  RxBool verified = false.obs;
+  RxBool showQuickIcons = false.obs;
   RxList<SocialMediaCardModel> availableSocialMediaCards  = <SocialMediaCardModel>[
     SocialMediaCardModel(
         name: 'Instagram',
@@ -160,6 +162,8 @@ class CreateServiceController extends getx.GetxController {
     bioController.text = socialMediaData.profile!.bio ?? '';
     avatarUrl = socialMediaData.profile!.avatar;
     backgroundUrl = socialMediaData.profile!.background;
+    verified.value = socialMediaData.profile!.verified ?? false;
+    showQuickIcons.value = socialMediaData.settings?.showQuickIcons ?? false;
     initializeSocialMediaCardsForEdit(socialMediaData.cards ?? []);
   }
 
@@ -345,6 +349,8 @@ class CreateServiceController extends getx.GetxController {
         bio: bioController.text,
         avatar: avatar.value,
         background: background.value,
+        verified: verified.value,
+        showQuickIcons: showQuickIcons.value,
         socialMediaCards: socialMediaCardsList.toList(),
       ),
     ).then((value) {
@@ -385,7 +391,7 @@ class CreateServiceController extends getx.GetxController {
     if (typeName == "social_media_cards_4") {
       fixedCount = 4;
     } else if (typeName == "social_media_cards_8") {
-      fixedCount = 9;
+      fixedCount = 8;
     } else if (typeName == "social_media_cards_unlimited") {
       fixedCount = 11;
     } else {
@@ -416,7 +422,7 @@ class CreateServiceController extends getx.GetxController {
           enabled: true,
           isFixed: true,
         );
-      } else {
+      } else if (typeName == "social_media_cards_unlimited") {
         socialMediaCardsList.add(
           SocialMediaCardModel(
             name: null,
@@ -510,6 +516,8 @@ class CreateServiceController extends getx.GetxController {
         bio: bioController.text,
         avatar: avatar.value,
         background: background.value,
+        verified: verified.value,
+        showQuickIcons: showQuickIcons.value,
         socialMediaCards: socialMediaCardsList.toList(),
       ),
     ).then((value) async {
@@ -537,13 +545,15 @@ class CreateServiceController extends getx.GetxController {
     avatarUrl = null;
     background.value = File('');
     backgroundUrl = null;
+    verified.value = false;
+    showQuickIcons.value = false;
 
     final typeName = selectedType?.name;
 
     if (typeName == "social_media_cards_4") {
       initializeSocialMediaCards(4);
     } else if (typeName == "social_media_cards_8") {
-      initializeSocialMediaCards(9);
+      initializeSocialMediaCards(8);
     } else if (typeName == "social_media_cards_unlimited") {
       initializeSocialMediaCards(11);
     }
