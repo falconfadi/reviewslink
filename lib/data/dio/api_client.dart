@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:reviews_link_v2/data/constant/api_constant.dart';
 import 'api_response.dart';
 
@@ -14,6 +16,20 @@ class ApiClient {
         headers: {"Content-Type": "application/json"},
       ),
     );
+
+    if (kDebugMode) {
+      _dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90,
+        ),
+      );
+    }
   }
 
   Future<ApiResponse<T>> get<T>(
