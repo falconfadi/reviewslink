@@ -21,6 +21,7 @@ const String CREATE_SERVICE = "/api/create_service";
 const String DELETE_SERVICE = "/api/delete_service";
 const String UPDATE_SERVICE = "/api/update_service";
 const String DELETE_SERVICE_REVIEW = "/api/delete_service_review";
+const String GOOGLE_PLACE_SEARCH = "/api/google_place_search";
 
 /// ---------------- Init ---------------- ///
 

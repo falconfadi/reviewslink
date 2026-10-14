@@ -35,6 +35,7 @@ class Constant {
     'social_media_cards_8': 'Social Media 8 Cards',
     'social_media_cards_unlimited': 'Social Media Unlimited Cards',
     'rating_form': 'Rating Form',
+    'google_review': 'Google Review',
   };
 
   static String serviceTypeName(String key) {

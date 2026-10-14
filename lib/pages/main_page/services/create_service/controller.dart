@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as getx;
@@ -5,13 +6,17 @@ import 'package:get/get_rx/get_rx.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_google_review_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_rating_form_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_social_media_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_url_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/google_place_search_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_google_review_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/update/update_service_rating_form_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/update/update_service_social_media_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/update/update_service_url_body.dart';
 import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
+import 'package:reviews_link_v2/data/models/response/service/google_place_response.dart';
 import 'package:reviews_link_v2/data/repository/service_repo.dart';
 import 'package:reviews_link_v2/extensions/context_localization.dart';
 import 'package:reviews_link_v2/pages/main_page/services/controller.dart';
@@ -114,13 +119,22 @@ class CreateServiceController extends getx.GetxController {
     ),
   ].obs;
   RxList<SocialMediaCardModel> socialMediaCardsList = <SocialMediaCardModel>[].obs;
+  /// google review
+  TextEditingController googleReviewNameController = TextEditingController();
+  TextEditingController googlePlaceSearchController = TextEditingController();
+  RxList<GooglePlaceResponse> googlePlaces = <GooglePlaceResponse>[].obs;
+  getx.Rxn<GooglePlaceResponse> selectedGooglePlace = getx.Rxn<GooglePlaceResponse>();
+  RxBool searchingGooglePlaces = false.obs;
+  RxBool googlePlacesSearched = false.obs;
+  Timer? googlePlaceSearchDebounce;
 
   final allowedTypes = [
     "url",
     "social_media_cards_4",
     "social_media_cards_8",
     "social_media_cards_unlimited",
-    "rating_form"
+    "rating_form",
+    "google_review"
   ];
   bool? editStatus;
   serviceModelResponse.ServiceResponse? chosenServiceToEdit;
@@ -138,10 +152,18 @@ class CreateServiceController extends getx.GetxController {
         fillRatingFormFields();
       } else if (selectedType!.id == 5 || selectedType!.id == 6 || selectedType!.id == 7) {
         fillSocialMediaFields();
+      } else if (selectedType!.name == "google_review") {
+        fillGoogleReviewFields();
       }
       print('@@@@@@@@@@@');
     }
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    googlePlaceSearchDebounce?.cancel();
+    super.onClose();
   }
 
   /// for Edit
@@ -166,6 +188,18 @@ class CreateServiceController extends getx.GetxController {
     showQuickIcons.value = socialMediaData.settings?.showQuickIcons ?? false;
     initializeSocialMediaCardsForEdit(socialMediaData.cards ?? []);
   }
+  fillGoogleReviewFields() {
+    final googleReviewData = chosenServiceToEdit!.jsonData as serviceModelResponse.GoogleReviewServiceData;
+
+    googleReviewNameController.text = chosenServiceToEdit!.name;
+    selectedGooglePlace.value = GooglePlaceResponse(
+      placeId: googleReviewData.placeId,
+      placeName: googleReviewData.placeName,
+      placeAddress: googleReviewData.placeAddress,
+      businessStatus: '',
+      googleReviewUrl: googleReviewData.url,
+    );
+  }
 
   choseSaveOption(BuildContext context) async {
     if (selectedType!.name == 'url') {
@@ -176,6 +210,8 @@ class CreateServiceController extends getx.GetxController {
         selectedType!.name == "social_media_cards_8" ||
         selectedType!.name == "social_media_cards_unlimited") {
       await createServiceSocialMedia(context);
+    } else if (selectedType!.name == "google_review") {
+      await createServiceGoogleReview(context);
     }
   }
 
@@ -380,6 +416,8 @@ class CreateServiceController extends getx.GetxController {
         selectedType!.name == "social_media_cards_8" ||
         selectedType!.name == "social_media_cards_unlimited") {
       await updateServiceSocialMedia(context);
+    } else if (selectedType!.name == "google_review") {
+      await updateServiceGoogleReview(context);
     }
   }
 
@@ -531,6 +569,127 @@ class CreateServiceController extends getx.GetxController {
     });
   }
 
+  void onGooglePlaceSearchChanged(String value) {
+    googlePlaceSearchDebounce?.cancel();
+    googlePlaceSearchDebounce = Timer(const Duration(milliseconds: 600), () {
+      searchGooglePlaces(value);
+    });
+  }
+
+  Future<void> searchGooglePlaces(String query) async {
+    if (query.trim().length < 2) {
+      googlePlaces.clear();
+      googlePlacesSearched.value = false;
+      searchingGooglePlaces.value = false;
+      return;
+    }
+    searchingGooglePlaces.value = true;
+    final value = await serviceRepo.googlePlaceSearch(
+      GooglePlaceSearchBody(
+        q: query.trim(),
+        limit: 8,
+        languageCode: 'en',
+        regionCode: 'AE',
+      ),
+    );
+    // ignore stale responses if the user kept typing
+    if (query.trim() != googlePlaceSearchController.text.trim()) {
+      return;
+    }
+    if (value.code == 200) {
+      googlePlaces.value = (value.body['places'] as List? ?? [])
+          .map((e) => GooglePlaceResponse.fromJson(e))
+          .toList();
+    } else {
+      googlePlaces.clear();
+    }
+    googlePlacesSearched.value = true;
+    searchingGooglePlaces.value = false;
+  }
+
+  void selectGooglePlace(GooglePlaceResponse place) {
+    Constant.closeKeyBoard();
+    selectedGooglePlace.value = place;
+  }
+
+  String googleReviewServiceName() {
+    final name = googleReviewNameController.text.trim();
+    return name.isNotEmpty ? name : selectedGooglePlace.value!.placeName;
+  }
+
+  Future<void> createServiceGoogleReview(BuildContext context) async {
+    Constant.closeKeyBoard();
+    if (loading.value) {
+      return;
+    }
+    if (selectedGooglePlace.value == null) {
+      TopSnackBar.warning(context, "Search for your business and select it first");
+      return;
+    }
+    loading.value = true;
+    await serviceRepo.createServiceGoogleReview(
+      CreateServiceGoogleReviewBody(
+        serviceTypeId: selectedType!.id.toString(),
+        name: googleReviewServiceName(),
+        googlePlaceId: selectedGooglePlace.value!.placeId,
+      ),
+    ).then((value) {
+      loading.value = false;
+      if (value.code == 201) {
+        clearGoogleReviewData();
+        serviceController.allServices.insert(
+          0,
+          serviceModelResponse.ServiceResponse.fromJson(
+            value.body['service'],
+          ),
+        );
+        TopSnackBar.success(context, value.message);
+      } else {
+        TopSnackBar.alert(context, value.message);
+      }
+    });
+  }
+
+  Future<void> updateServiceGoogleReview(BuildContext context) async {
+    Constant.closeKeyBoard();
+    if (loading.value) {
+      return;
+    }
+    if (selectedGooglePlace.value == null) {
+      TopSnackBar.warning(context, "Search for your business and select it first");
+      return;
+    }
+    loading.value = true;
+    await serviceRepo.updateServiceGoogleReview(
+      UpdateServiceGoogleReviewBody(
+        serviceId: chosenServiceToEdit!.id.toString(),
+        serviceTypeId: selectedType!.id.toString(),
+        name: googleReviewServiceName(),
+        googlePlaceId: selectedGooglePlace.value!.placeId,
+      ),
+    ).then((value) async {
+      if (value.code == 200) {
+        await serviceController.getServicesList();
+        loading.value = false;
+        getx.Get.back();
+        TopSnackBar.success(context, value.message);
+      } else {
+        loading.value = false;
+        TopSnackBar.alert(context, value.message);
+      }
+    });
+  }
+
+  void clearGoogleReviewData() {
+    googlePlaceSearchDebounce?.cancel();
+    googleReviewNameController.clear();
+    googlePlaceSearchController.clear();
+    googlePlaces.clear();
+    selectedGooglePlace.value = null;
+    searchingGooglePlaces.value = false;
+    googlePlacesSearched.value = false;
+  }
+
   void clearFormRatingData() {
     formRatingTitleController.clear();
     formRatingDescriptionController.clear();
@@ -564,6 +723,7 @@ class CreateServiceController extends getx.GetxController {
     urlController.clear();
     clearFormRatingData();
     clearSocialMediaData();
+    clearGoogleReviewData();
   }
 
   void initializeSocialMediaCards(int count) {

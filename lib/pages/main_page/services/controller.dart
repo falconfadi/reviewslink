@@ -28,7 +28,8 @@ class ServiceController extends GetxController implements GetxService {
     "social_media_cards_4",
     "social_media_cards_8",
     "social_media_cards_unlimited",
-    "rating_form"
+    "rating_form",
+    "google_review"
   ];
 
   void handleServices(List servicesJson) {

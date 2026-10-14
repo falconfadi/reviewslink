@@ -27,6 +27,9 @@ class ServiceCard extends StatelessWidget {
         if (service.serviceType.name == 'url') {
           Constant.launchUrls(Uri.parse((service.jsonData as UrlServiceData).url));
         }
+        if (service.serviceType.name == 'google_review') {
+          Constant.launchUrls(Uri.parse((service.jsonData as GoogleReviewServiceData).url));
+        }
         if (service.serviceType.name == "rating_form") {
           Dialogs.show(
             context,
@@ -105,6 +108,8 @@ class ServiceCard extends StatelessWidget {
                                 (service.jsonData as SocialMediaServiceData).cards!.isNotEmpty ?
                             (service.jsonData as SocialMediaServiceData).cards!.first.platform! :
                             (service.jsonData as SocialMediaServiceData).profile!.displayName!
+                            : service.serviceType.name == "google_review"
+                            ? (service.jsonData as GoogleReviewServiceData).placeName
                             : "",
                         style: AppTheme.bodyLarge.copyWith(fontSize: 20.sp,color: white),
                         maxLines: 2,
