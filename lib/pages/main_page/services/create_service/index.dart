@@ -5,6 +5,7 @@ import 'package:reviews_link_v2/constant/constant.dart';
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/models/response/init/init_response.dart';
 import 'package:reviews_link_v2/pages/main_page/services/create_service/controller.dart';
+import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/google_review_service.dart';
 import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/rating_form_service.dart';
 import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/social_media_service.dart';
 import 'package:reviews_link_v2/pages/main_page/services/create_service/widgets/url_service.dart';
@@ -162,6 +163,9 @@ class _CreateServicePageState extends State<CreateServicePage> {
           initialCards: 11,
           canAddMore: true,
         );
+
+      case "google_review":
+        return GoogleReviewService(controller: createServiceController);
 
       default:
         return Container(

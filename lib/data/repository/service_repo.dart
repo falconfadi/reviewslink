@@ -1,6 +1,9 @@
 import 'package:reviews_link_v2/controllers/init_controller.dart';
 import 'package:reviews_link_v2/data/dio/api_response.dart';
+import 'package:reviews_link_v2/data/models/body/service/create/create_service_google_review_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_rating_form_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/google_place_search_body.dart';
+import 'package:reviews_link_v2/data/models/body/service/update/update_service_google_review_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_social_media_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/create/create_service_url_body.dart';
 import 'package:reviews_link_v2/data/models/body/service/delete_service_review_body.dart';
@@ -155,6 +158,51 @@ class ServiceRepo {
       },
     );
 
+    if (res.code == 200) {
+      print('done');
+      return res;
+    } else {
+      print('Failed: ${res.status} - ${res.message}');
+      return res;
+    }
+  }
+
+  Future<ApiResponse> googlePlaceSearch(GooglePlaceSearchBody googlePlaceSearchBody) async {
+    final res = await apiClient.post(
+      GOOGLE_PLACE_SEARCH,
+      data: googlePlaceSearchBody.toJson(),
+      headers: {'Authorization': 'Bearer ${initController.userData!.token}'},
+    );
+    if (res.code == 200) {
+      print('get');
+      return res;
+    } else {
+      print('Failed: ${res.status} - ${res.message}');
+      return res;
+    }
+  }
+
+  Future<ApiResponse> createServiceGoogleReview(CreateServiceGoogleReviewBody createServiceGoogleReviewBody) async {
+    final res = await apiClient.post(
+      CREATE_SERVICE,
+      data: createServiceGoogleReviewBody.toJson(),
+      headers: {'Authorization': 'Bearer ${initController.userData!.token}'},
+    );
+    if (res.code == 201) {
+      print('done');
+      return res;
+    } else {
+      print('Failed: ${res.status} - ${res.message}');
+      return res;
+    }
+  }
+
+  Future<ApiResponse> updateServiceGoogleReview(UpdateServiceGoogleReviewBody updateServiceGoogleReviewBody) async {
+    final res = await apiClient.post(
+      UPDATE_SERVICE,
+      data: updateServiceGoogleReviewBody.toJson(),
+      headers: {'Authorization': 'Bearer ${initController.userData!.token}'},
+    );
     if (res.code == 200) {
       print('done');
       return res;

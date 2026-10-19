@@ -38,6 +38,9 @@ class ServiceResponse {
       case "social_media_cards_unlimited" || "social_media_cards_4" || "social_media_cards_8":
         parsedJson = SocialMediaServiceData.fromJson(json['json_data'] ?? {});
         break;
+      case "google_review":
+        parsedJson = GoogleReviewServiceData.fromJson(json['json_data'] ?? {});
+        break;
       default:
         parsedJson = json['json_data'];
     }
@@ -213,6 +216,30 @@ class UrlServiceData {
 
   factory UrlServiceData.fromJson(Map<String, dynamic> json) {
     return UrlServiceData(url: json['url'] ?? '', title: json['title'] ?? '');
+  }
+}
+
+class GoogleReviewServiceData {
+
+  final String placeId;
+  final String placeName;
+  final String placeAddress;
+  final String url;
+
+  GoogleReviewServiceData({
+    required this.placeId,
+    required this.placeName,
+    required this.placeAddress,
+    required this.url,
+  });
+
+  factory GoogleReviewServiceData.fromJson(Map<String, dynamic> json) {
+    return GoogleReviewServiceData(
+      placeId: json['place_id'] ?? '',
+      placeName: json['place_name'] ?? '',
+      placeAddress: json['place_address'] ?? '',
+      url: json['url'] ?? '',
+    );
   }
 }
 
